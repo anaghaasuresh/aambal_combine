@@ -1,0 +1,33 @@
+@font-face {
+  font-family: 'Maison Neue Extended';
+  src: url('/fonts/MaisonNeueExtended-Book.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --color-cream: #f4efe6;
+  --color-green: #0f3b2d;
+  --color-gold: #e9bf6f;
+  --color-plum: #340a24;
+  /* swap these when you send the real font */
+  --font-heading: 'Italiana', Georgia, serif;
+  --font-body: 'Italiana', Georgia, serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 0.96rem;
+  background: var(--color-cream);
+  color: var(--color-green);
+}
+

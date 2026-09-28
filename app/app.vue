@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <NuxtRouteAnnouncer />
-    <NuxtWelcome />
-  </div>
+  <main>
+    <AppNavbar />
+    <HeroArch />
+    <!-- your placeholder section -->
+  </main>
 </template>
