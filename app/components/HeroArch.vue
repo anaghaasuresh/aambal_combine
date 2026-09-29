@@ -18,12 +18,23 @@
 </template>
 
 <script setup>
+const { $lenis } = useNuxtApp()
 const introDone = useState('introDone', () => false)
 import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 const heroEl = ref(null)
 const archEl = ref(null)
 const imgEl = ref(null)
+
+let panDistance = 0
+
+function measurePan() {
+  if (!imgEl.value || !heroEl.value) return
+  const frameHeight = heroEl.value.getBoundingClientRect().height
+  const imgHeight = imgEl.value.getBoundingClientRect().height
+  panDistance = Math.max(0, imgHeight - frameHeight)
+}
 
 let ctx
 
@@ -39,11 +50,13 @@ const stopKeys = (e) => {
 }
 
 function lockScroll() {
+  $lenis?.stop()
   window.addEventListener('wheel', stopScroll, { passive: false })
   window.addEventListener('touchmove', stopScroll, { passive: false })
   window.addEventListener('keydown', stopKeys)
 }
 function unlockScroll() {
+  $lenis?.start()
   window.removeEventListener('wheel', stopScroll)
   window.removeEventListener('touchmove', stopScroll)
   window.removeEventListener('keydown', stopKeys)
@@ -53,13 +66,16 @@ onMounted(() => {
   window.scrollTo(0, 0)
   lockScroll()
 
-  ctx = gsap.context(() => {
-    const tl = gsap.timeline({
-  onComplete: () => {
-    unlockScroll()
-    introDone.value = true
-  },
-    })
+  const startAnimations = () => {
+    measurePan()
+
+    ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          unlockScroll()
+          introDone.value = true
+        },
+      })
 
     // Phase 1: the arch and its rings rise from the bottom
     tl.fromTo(archEl.value, { clipPath: ARCH_HIDDEN }, {
@@ -81,7 +97,27 @@ onMounted(() => {
 
       // Phase 3: text fades up
       .from('.hero__content > *', { y: 40, opacity: 0, duration: 0.9, ease: 'power2.out', stagger: 0.15 }, '-=0.5')
-  }, heroEl.value)
+
+     ScrollTrigger.create({
+  trigger: heroEl.value,
+  start: 'top top',
+  end: '+=80%',
+  pin: true,
+  pinSpacing: true,
+  scrub: 1,
+  animation: gsap.timeline()
+    .to(imgEl.value, { y: -panDistance, ease: 'none' }, 0)
+    .to('.hero__shade', { opacity: 0.75, ease: 'none' }, 0)
+    .to('.hero__content', { yPercent: -150, ease: 'none' }, 0),
+})
+    }, heroEl.value)
+  }
+
+  if (imgEl.value.complete) {
+    startAnimations()
+  } else {
+    imgEl.value.addEventListener('load', startAnimations, { once: true })
+  }
 })
 
 onBeforeUnmount(() => {
@@ -112,11 +148,12 @@ onBeforeUnmount(() => {
 }
 
 .hero__img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;      /* preserves the photo's real proportions, no forced crop */
   display: block;
-  transform-origin: 50% 100%;
 }
 
 .hero__shade {

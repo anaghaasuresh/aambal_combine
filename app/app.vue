@@ -2,6 +2,6 @@
   <main>
     <AppNavbar />
     <HeroArch />
-    <!-- your placeholder section -->
+    <IntroSection />
   </main>
 </template>
