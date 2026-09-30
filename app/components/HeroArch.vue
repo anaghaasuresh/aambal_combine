@@ -11,7 +11,7 @@
 
       <div class="hero__content">
         <h1>AAMBAL<br />RESORT</h1>
-        <p>and events</p>
+        <p>where peace finds you</p>
       </div>
 
       <!-- dome overlay: rises over the still-pinned image, same timeline, guaranteed sync -->
@@ -184,9 +184,9 @@ onBeforeUnmount(() => {
 }
 .hero__content h1 { font-family: var(--font-heading); font-weight: 500; font-size: clamp(3.5rem, 12vw, 10rem); line-height: 0.9; }
 .hero__content p {
-  margin-top: 1.5rem;
+  margin-top: 2.5rem;
   font-family: var(--font-script);
-  font-size: clamp(2rem, 4vw, 4rem);
+  font-size: clamp(2rem, 4vw, 2.7rem);
   font-weight: 400;
   line-height: 1;
   color: #fff;
