@@ -15,17 +15,14 @@
       </div>
 
       <!-- dome overlay: rises over the still-pinned image, same timeline, guaranteed sync -->
-      <div ref="domeEl" class="hero__dome">
-        <div class="hero__dome-inner">
-          <div class="about__center">
-            <h2 class="about__title">About <em>Aambal Resort &amp; Events</em></h2>
-            <div class="about__divider"></div>
-            <p class="about__lead">A peaceful riverside retreat where nature, comfort, and celebrations come together.</p>
-            <p class="about__body">Nestled along the river and surrounded by lush greenery, Aambal Resort offers a tranquil escape from everyday life. With cozy cottages and thoughtfully designed event spaces, it is a place to relax, reconnect, and create memorable moments.</p>
-          </div>
-        </div>
-      </div>
+  <div ref="domeEl" class="hero__dome">
+  <div class="hero__dome-inner">
+    <div class="about__center">
+      <p class="about__statement">A serene riverside retreat surrounded by lush greenery, offering peaceful stays, beautiful event spaces, and moments to relax, reconnect, and celebrate.</p>
     </div>
+  </div>
+</div>
+      </div>
   </section>
 </template>
 
@@ -105,25 +102,28 @@ onMounted(() => {
 
       // ONE ScrollTrigger drives every phase below, in strict order — nothing to fall out of sync
       ScrollTrigger.create({
-        trigger: heroEl.value,
-        start: 'top top',
-        end: '+=220%',
-        pin: true,
-        pinSpacing: true,
-        scrub: true,
-        animation: gsap.timeline()
-          // phase A (0 – 0.9): pan reveals the full photo
-          .to(imgEl.value, { y: -panDistance, ease: 'none', duration: 0.9 }, 0)
-          .to('.hero__shade', { opacity: 0.75, ease: 'none', duration: 0.9 }, 0)
-          .to('.hero__content', { yPercent: -150, ease: 'none', duration: 0.6 }, 0)
-          // phase B (0.9 – 1.3): nothing happens — sticky hold, photo fully visible
-          // phase C (1.3 – 2.3): dome rises over the still-static photo
-          .fromTo(domeEl.value,
-            { clipPath: DOME_HIDDEN },
-            { clipPath: DOME_FULL, ease: 'none', duration: 1, immediateRender: false },
-            1.3
-          ),
-      })
+  trigger: heroEl.value,
+  start: 'top top',
+  end: '+=280%', // slightly shorter than before, since there's only one reveal phase now
+  pin: true,
+  pinSpacing: true,
+  scrub: true,
+  animation: gsap.timeline()
+    .to(imgEl.value, { y: -panDistance, ease: 'none', duration: 0.9 }, 0)
+    .to('.hero__shade', { opacity: 0.75, ease: 'none', duration: 0.9 }, 0)
+    .to('.hero__content', { yPercent: -150, ease: 'none', duration: 0.6 }, 0)
+    .fromTo(domeEl.value,
+      { clipPath: DOME_HIDDEN },
+      { clipPath: DOME_FULL, ease: 'none', duration: 1, immediateRender: false },
+      1.3
+    )
+    // the whole statement fades and scales in together, once the dome is fully open
+    .fromTo('.about__statement',
+      { opacity: 0, scale: 0.92 },
+      { opacity: 1, scale: 1, ease: 'none', duration: 0.8 },
+      2.4
+    ),
+})
     }, heroEl.value)
   }
 
@@ -174,49 +174,24 @@ onBeforeUnmount(() => {
 /* the dome overlay — same pinned box, so it can never desync from the photo above */
 .hero__dome {
   position: absolute; inset: 0; z-index: 4;
-  background: var(--color-white);
+  background: var(--color-cream);
   clip-path: inset(100vh 0vw 0vh 0vw round 50vw 50vw 0vw 0vw / 10vw 10vw 0vw 0vw);
   will-change: clip-path;
   overflow-y: auto;
 }
 .hero__dome-inner { padding: 8rem clamp(1.5rem, 6vw, 6rem) 5rem; }
 
-.about__title {
-  text-align: center;
-  font-family: var(--font-heading);
-  font-size: clamp(2rem, 4vw, 3rem);
-  color: var(--color-green);
-  margin-bottom: 1.25rem;
-}
-.about__title em { font-style: normal; color: var(--color-gold); }
-
-.about__divider {
-  width: 50px;
-  height: 1px;
-  background: var(--color-gold);
-  margin: 0 auto 1.75rem;
-}
-
-.about__lead {
-  font-family: var(--font-heading);
-  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
-  line-height: 1.4;
-  color: var(--color-green);
-  margin-bottom: 1.5rem;
-  max-width: 520px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.about__body {
-  font-family: var(--font-body);
-  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
-  line-height: 1.85;
-  color: var(--color-green);
-  max-width: 480px;
+.about__center {
+  max-width: 1000px;
   margin: 0 auto;
+  text-align: center;
 }
 
-
+.about__statement {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+  line-height: 1.25;
+  color: var(--color-gold);
+}
 
 </style>
