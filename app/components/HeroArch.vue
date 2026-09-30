@@ -17,23 +17,11 @@
       <!-- dome overlay: rises over the still-pinned image, same timeline, guaranteed sync -->
       <div ref="domeEl" class="hero__dome">
         <div class="hero__dome-inner">
-          <h2 class="about__title">About <em>Aambal Resort &amp; Events</em></h2>
-          <div class="about__divider"></div>
-          <div class="about__grid">
-            <div class="about__media">
-              <img src="/images/hero.png" alt="Aerial view of Aambal Resort" />
-              <button class="about__play" type="button" aria-label="Play video">▶</button>
-            </div>
-            <div class="about__copy">
-              <h3>Discover tranquility at our riverside resort with versatile event spaces &amp; charming cottages.</h3>
-              <p>Nestled on the pristine banks of a picturesque river, our riverfront resort is a hidden gem offering a serene escape masterfully crafted by Nature Holidays and Events.</p>
-              <p>With charming cottages, we offer an intimate and exclusive retreat for those seeking tranquility. But that's not all — our resort is not just about relaxation; it's also a place for celebrations and gatherings.</p>
-              <ul>
-                <li>Offers an intimate and peaceful getaway, where the soothing river melodies are your constant companion.</li>
-                <li>Hosting your special event at our resort means combining natural beauty with sophistication.</li>
-                <li>Experience the warmth of our charming cottages, each thoughtfully designed for comfort and style.</li>
-              </ul>
-            </div>
+          <div class="about__center">
+            <h2 class="about__title">About <em>Aambal Resort &amp; Events</em></h2>
+            <div class="about__divider"></div>
+            <p class="about__lead">A peaceful riverside retreat where nature, comfort, and celebrations come together.</p>
+            <p class="about__body">Nestled along the river and surrounded by lush greenery, Aambal Resort offers a tranquil escape from everyday life. With cozy cottages and thoughtfully designed event spaces, it is a place to relax, reconnect, and create memorable moments.</p>
           </div>
         </div>
       </div>
@@ -65,7 +53,7 @@ let ctx
 const ARCH_HIDDEN = 'inset(100vh 34vw 0vh 34vw round 16vw 16vw 0vw 0vw)'
 const ARCH_RISEN  = 'inset(45vh 34vw 0vh 34vw round 16vw 16vw 0vw 0vw)'
 const ARCH_FULL   = 'inset(0vh 0vw 0vh 0vw round 0vw 0vw 0vw 0vw)'
-const DOME_HIDDEN = 'inset(100vh 0vw 0vh 0vw round 50vw 50vw 0vw 0vw / 10vw 10vw 0vw 0vw)'
+const DOME_HIDDEN = 'inset(100vh 25vw 0vh 25vw round 50vw 50vw 0vw 0vw / 5vw 5vw 0vw 0vw)'
 const DOME_FULL   = 'inset(0vh 0vw 0vh 0vw round 0vw 0vw 0vw 0vw)'
 
 const stopScroll = (e) => e.preventDefault()
@@ -154,7 +142,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .hero { width: 100%; height: 100vh; }
-.hero__stage { position: relative; width: 100%; height: 100vh; overflow: hidden; background: var(--color-plum); }
+.hero__stage { position: relative; width: 100%; height: 100vh; overflow: hidden; background: var(--color-green); }
 
 .hero__arch {
   position: absolute; inset: 0; z-index: 2;
@@ -186,25 +174,49 @@ onBeforeUnmount(() => {
 /* the dome overlay — same pinned box, so it can never desync from the photo above */
 .hero__dome {
   position: absolute; inset: 0; z-index: 4;
-  background: var(--color-cream);
+  background: var(--color-white);
   clip-path: inset(100vh 0vw 0vh 0vw round 50vw 50vw 0vw 0vw / 10vw 10vw 0vw 0vw);
   will-change: clip-path;
   overflow-y: auto;
 }
 .hero__dome-inner { padding: 8rem clamp(1.5rem, 6vw, 6rem) 5rem; }
 
-.about__title { text-align: center; font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 3rem); color: var(--color-green); margin-bottom: 1.5rem; }
+.about__title {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--color-green);
+  margin-bottom: 1.25rem;
+}
 .about__title em { font-style: normal; color: var(--color-gold); }
-.about__divider { width: 60%; max-width: 500px; margin: 0 auto 4rem; border-top: 1px dashed rgba(15,59,45,0.3); }
-.about__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; }
-.about__media { position: relative; aspect-ratio: 4/3; border-radius: 1rem; overflow: hidden; }
-.about__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.about__play { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 64px; height: 64px; border-radius: 50%; border: none; background: var(--color-gold); color: #fff; font-size: 1.1rem; cursor: pointer; }
-.about__copy h3 { font-family: var(--font-heading); font-size: clamp(1.4rem, 2.5vw, 2rem); color: var(--color-green); margin-bottom: 1.2rem; line-height: 1.3; }
-.about__copy p { color: rgba(15,59,45,0.75); line-height: 1.7; margin-bottom: 1rem; }
-.about__copy ul { list-style: none; margin-top: 1.5rem; display: grid; gap: 0.9rem; }
-.about__copy li { padding-left: 1.6rem; position: relative; color: var(--color-green); }
-.about__copy li::before { content: '✓'; position: absolute; left: 0; color: var(--color-gold); }
 
-@media (max-width: 800px) { .about__grid { grid-template-columns: 1fr; } }
+.about__divider {
+  width: 50px;
+  height: 1px;
+  background: var(--color-gold);
+  margin: 0 auto 1.75rem;
+}
+
+.about__lead {
+  font-family: var(--font-heading);
+  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+  line-height: 1.4;
+  color: var(--color-green);
+  margin-bottom: 1.5rem;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about__body {
+  font-family: var(--font-body);
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  line-height: 1.85;
+  color: var(--color-green);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+
+
 </style>
