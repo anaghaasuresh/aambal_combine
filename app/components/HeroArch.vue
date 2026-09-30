@@ -11,14 +11,16 @@
 
       <div class="hero__content">
         <h1>AAMBAL<br />RESORT</h1>
-        <p>A place to return to.</p>
+        <p>and events</p>
       </div>
 
       <!-- dome overlay: rises over the still-pinned image, same timeline, guaranteed sync -->
   <div ref="domeEl" class="hero__dome">
   <div class="hero__dome-inner">
     <div class="about__center">
-      <p class="about__statement">A serene riverside retreat surrounded by lush greenery, offering peaceful stays, beautiful event spaces, and moments to relax, reconnect, and celebrate.</p>
+      <p class="about__statement">
+  <span v-for="(word, i) in statementWords" :key="i" class="about__word">{{ word }}&nbsp;</span>
+</p>
     </div>
   </div>
 </div>
@@ -27,6 +29,7 @@
 </template>
 
 <script setup>
+const statementWords = 'A serene riverside retreat embraced by lush greenery, Aambal Resort blends peaceful stays, elegant event spaces, and the beauty of nature to create a place where you can relax, reconnect, and celebrate lifes special moments.'.split(' ')
 const { $lenis } = useNuxtApp()
 const introDone = useState('introDone', () => false)
 import { gsap } from 'gsap'
@@ -46,6 +49,21 @@ function measurePan() {
 }
 
 let ctx
+let wordsRevealed = false
+
+function revealWords() {
+  if (wordsRevealed) return
+
+  wordsRevealed = true
+
+  gsap.to('.about__word', {
+    opacity: 1,
+    y: 0,
+    duration: 0.7,
+    ease: 'power3.out',
+    stagger: 0.05,
+  })
+}
 
 const ARCH_HIDDEN = 'inset(100vh 34vw 0vh 34vw round 16vw 16vw 0vw 0vw)'
 const ARCH_RISEN  = 'inset(45vh 34vw 0vh 34vw round 16vw 16vw 0vw 0vw)'
@@ -118,11 +136,7 @@ onMounted(() => {
       1.3
     )
     // the whole statement fades and scales in together, once the dome is fully open
-    .fromTo('.about__statement',
-      { opacity: 0, scale: 0.92 },
-      { opacity: 1, scale: 1, ease: 'none', duration: 0.8 },
-      2.4
-    ),
+.call(revealWords, [], 1.55),
 })
     }, heroEl.value)
   }
@@ -169,7 +183,14 @@ onBeforeUnmount(() => {
   text-align: center; color: #fff; pointer-events: none;
 }
 .hero__content h1 { font-family: var(--font-heading); font-weight: 500; font-size: clamp(3.5rem, 12vw, 10rem); line-height: 0.9; }
-.hero__content p { margin-top: 1.5rem; font-family: var(--font-heading); font-size: clamp(1.2rem, 2.5vw, 2rem); }
+.hero__content p {
+  margin-top: 1.5rem;
+  font-family: var(--font-script);
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-weight: 400;
+  line-height: 1;
+  color: #fff;
+}
 
 /* the dome overlay — same pinned box, so it can never desync from the photo above */
 .hero__dome {
@@ -182,16 +203,30 @@ onBeforeUnmount(() => {
 .hero__dome-inner { padding: 8rem clamp(1.5rem, 6vw, 6rem) 5rem; }
 
 .about__center {
-  max-width: 1000px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
+  padding: 0 4vw;
   text-align: center;
 }
 
 .about__statement {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+
   font-family: var(--font-heading);
-  font-size: clamp(2.2rem, 5.5vw, 4.5rem);
-  line-height: 1.25;
+  font-size: clamp(3rem, 5vw, 5.3rem);
+  line-height: 1.37;
+  letter-spacing: -0.02em;
+
   color: var(--color-gold);
+}
+
+.about__word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(15px);
 }
 
 </style>
