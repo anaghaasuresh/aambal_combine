@@ -1,24 +1,35 @@
 <template>
   <section class="features">
-    <div ref="row1" class="features__row">
-      <div class="features__media features__media--left">
-        <img src="/images/beige11.png" alt="Versatile event spaces at Aambal Resort" />
+    <div ref="trackEl" class="features__track">
+      <div ref="row1" class="features__row">
+        <div class="features__media features__media--left">
+          <img src="/images/beige11.png" alt="Versatile event spaces at Aambal Resort" />
+        </div>
+        <span class="features__label features__label--right">
+  An open green space where celebrations unfold
+  <em>beneath the sky.</em>
+</span>
       </div>
-      <span class="features__label features__label--right">An open green space where celebrations unfold beneath the sky.</span>
-    </div>
 
-    <div ref="row2" class="features__row">
-      <span class="features__label features__label--left">Charming riverside cottages designed for quiet moments and restful stays.</span>
-      <div class="features__media features__media--right">
-        <img src="/images/beige2.png" alt="Scenic views at Aambal Resort" />
+      <div ref="row2" class="features__row">
+        <span class="features__label features__label--left">
+  Charming riverside cottages designed for quiet moments and
+  <em>restful stays.</em>
+</span>
+        <div class="features__media features__media--right">
+          <img src="/images/beige2.png" alt="Scenic views at Aambal Resort" />
+        </div>
       </div>
-    </div>
 
-    <div ref="row3" class="features__row">
-      <div class="features__media features__media--left">
-        <img src="/images/beige3.png" alt="Relaxation and romance at Aambal Resort" />
+      <div ref="row3" class="features__row">
+        <div class="features__media features__media--left">
+          <img src="/images/beige3.png" alt="Relaxation and romance at Aambal Resort" />
+        </div>
+        <span class="features__label features__label--right">
+  Warm, intimate spaces created for comfort, rest, and
+  <em>unhurried mornings.</em>
+</span>
       </div>
-      <span class="features__label features__label--right">Warm, intimate spaces created for comfort, rest, and unhurried mornings.</span>
     </div>
   </section>
 </template>
@@ -27,9 +38,12 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
+gsap.registerPlugin(ScrollTrigger)
+
 const row1 = ref(null)
 const row2 = ref(null)
 const row3 = ref(null)
+const trackEl = ref(null)
 let ctx
 
 onMounted(() => {
@@ -53,19 +67,18 @@ onMounted(() => {
         }
       )
     })
-  })
+  }, trackEl.value)
 })
 
-onBeforeUnmount(() => ctx && ctx.revert())
+onBeforeUnmount(() => {
+  ctx && ctx.revert()
+})
 </script>
 
 <style scoped>
 .features {
   background: var(--color-cream);
   padding: 6rem clamp(1.5rem, 6vw, 6rem);
-  display: flex;
-  flex-direction: column;
-  gap: 6rem;
 }
 
 .features__row {
@@ -75,7 +88,6 @@ onBeforeUnmount(() => ctx && ctx.revert())
   gap: clamp(2rem, 6vw, 5rem);
 }
 
-/* explicit left/right placement — no RTL trick, always predictable */
 .features__media--left  { order: 1; }
 .features__label--right { order: 2; text-align: left;  padding-left: 1rem; }
 
@@ -83,10 +95,15 @@ onBeforeUnmount(() => ctx && ctx.revert())
 .features__media--right { order: 2; }
 
 .features__label {
-  font-family: var(--font-script);
+  font-family: var(--font-features);
   font-size: clamp(2rem, 4.5vw, 3.5rem);
   line-height: 1.2;
-  color: var(--color-gold);
+  color: var(--color-green);
+}
+
+.features__label em {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
 }
 
 .features__media {
@@ -101,10 +118,17 @@ onBeforeUnmount(() => ctx && ctx.revert())
   display: block;
 }
 
+.features__track {
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+}
+
 @media (max-width: 800px) {
   .features__row {
     grid-template-columns: 1fr;
   }
+
   .features__media--left,
   .features__media--right,
   .features__label--left,

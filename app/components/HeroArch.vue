@@ -5,7 +5,7 @@
       <div class="hero__ring hero__ring--inner"></div>
 
       <div ref="archEl" class="hero__arch">
-        <img ref="imgEl" class="hero__img" src="/images/hero.png" alt="Aambal Resort" />
+        <img ref="imgEl" class="hero__img" src="/images/hero1.png" alt="Aambal Resort" />
         <div class="hero__shade"></div>
       </div>
 
@@ -194,13 +194,15 @@ onBeforeUnmount(() => {
 
 /* the dome overlay — same pinned box, so it can never desync from the photo above */
 .hero__dome {
-  position: absolute; inset: 0; z-index: 4;
+  position: absolute;
+  inset: 0;
+  z-index: 4;
   background: var(--color-cream);
   clip-path: inset(100vh 0vw 0vh 0vw round 50vw 50vw 0vw 0vw / 10vw 10vw 0vw 0vw);
   will-change: clip-path;
-  overflow-y: auto;
+  overflow: hidden;
 }
-.hero__dome-inner { padding: 8rem clamp(1.5rem, 6vw, 6rem) 5rem; }
+.hero__dome-inner { padding: 12rem clamp(1.5rem, 6vw, 6rem) 5rem; }
 
 .about__center {
   width: 100%;

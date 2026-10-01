@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap');
+
 @font-face {
   font-family: 'Maison Neue Extended';
   src: url('/fonts/MaisonNeueExtended-Book.woff2') format('woff2');
@@ -24,6 +26,7 @@ html, body, #__nuxt {
   --font-heading: 'Italiana', Georgia, serif;
   --font-body: 'Italiana', Georgia, serif;
   --font-script: 'Allura', cursive;
+  --font-features: 'Cormorant Garamond', serif;
 }
 
 *,
