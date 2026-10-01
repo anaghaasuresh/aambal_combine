@@ -132,7 +132,7 @@ onMounted(() => {
     .to('.hero__content', { yPercent: -150, ease: 'none', duration: 0.6 }, 0)
     .fromTo(domeEl.value,
       { clipPath: DOME_HIDDEN },
-      { clipPath: DOME_FULL, ease: 'none', duration: 1, immediateRender: false },
+      { clipPath: DOME_FULL, ease: 'none', duration: 0.1, immediateRender: false },
       1.3
     )
     // the whole statement fades and scales in together, once the dome is fully open
