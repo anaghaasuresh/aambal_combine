@@ -4,11 +4,11 @@
       <div class="features__media features__media--left">
         <img src="/images/beige11.png" alt="Versatile event spaces at Aambal Resort" />
       </div>
-      <span class="features__label features__label--right">Versatile Event Spaces</span>
+      <span class="features__label features__label--right">An open green space where celebrations unfold beneath the sky.</span>
     </div>
 
     <div ref="row2" class="features__row">
-      <span class="features__label features__label--left">Scenic Views</span>
+      <span class="features__label features__label--left">Charming riverside cottages designed for quiet moments and restful stays.</span>
       <div class="features__media features__media--right">
         <img src="/images/beige2.png" alt="Scenic views at Aambal Resort" />
       </div>
@@ -18,7 +18,7 @@
       <div class="features__media features__media--left">
         <img src="/images/beige3.png" alt="Relaxation and romance at Aambal Resort" />
       </div>
-      <span class="features__label features__label--right">Relaxation &amp; Romance</span>
+      <span class="features__label features__label--right">Warm, intimate spaces created for comfort, rest, and unhurried mornings.</span>
     </div>
   </section>
 </template>
@@ -83,10 +83,10 @@ onBeforeUnmount(() => ctx && ctx.revert())
 .features__media--right { order: 2; }
 
 .features__label {
-  font-family: var(--font-heading);
+  font-family: var(--font-script);
   font-size: clamp(2rem, 4.5vw, 3.5rem);
   line-height: 1.2;
-  color: var(--color-green);
+  color: var(--color-gold);
 }
 
 .features__media {
