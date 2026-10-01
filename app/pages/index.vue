@@ -1,0 +1,4 @@
+<template>
+    <HeroArch />
+    <FeaturesSection />
+</template>

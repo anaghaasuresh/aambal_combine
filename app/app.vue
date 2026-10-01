@@ -1,7 +1,5 @@
 <template>
-  <main>
-    <AppNavbar />
-    <HeroArch />
-    <FeaturesSection />
-  </main>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
