@@ -24,3 +24,4 @@ export default defineNuxtPlugin(() => {
     provide: { lenis },
   }
 })
+// lenis 
