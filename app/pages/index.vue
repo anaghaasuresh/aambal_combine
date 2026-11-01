@@ -1,4 +1,4 @@
 <template>
     <HeroArch />
-    <FeaturesSection />
+    <placestovisit />
 </template>
