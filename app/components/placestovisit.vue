@@ -9,17 +9,6 @@ import hillPalace from "~/assets/images/hillpalace.avif";
 import indoPortuguese from "~/assets/images/indomuseum.avif";
 import athirappilly from "~/assets/images/waterfall.avif";
 
-useHead({
-  link: [
-    { rel: "preconnect", href: "https://fonts.googleapis.com" },
-    { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "" },
-    {
-      rel: "stylesheet",
-      href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap",
-    },
-  ],
-});
-
 const { $lenis } = useNuxtApp();
 
 type Stop = {
@@ -276,14 +265,15 @@ onBeforeUnmount(() => {
           <svg v-if="trail.w" class="journey__trail-svg" fill="none" :viewBox="`0 0 ${trail.w} ${trail.h}`">
             <defs>
               <linearGradient id="trailGradient" x1="0%" x2="0%" y1="0%" y2="100%">
-                <stop offset="0%" stop-color="#C5A059" stop-opacity="0.5" />
-                <stop offset="50%" stop-color="#A98342" stop-opacity="0.9" />
-                <stop offset="100%" stop-color="#8E6B2C" stop-opacity="0.9" />
+                <stop class="trail-stop trail-stop--a" offset="0%" stop-opacity="0.5" />
+                <stop class="trail-stop trail-stop--b" offset="50%" stop-opacity="0.9" />
+                <stop class="trail-stop trail-stop--c" offset="100%" stop-opacity="0.9" />
               </linearGradient>
             </defs>
-            <path :d="trail.d" stroke="#D6C6A6" stroke-dasharray="5 7" stroke-linecap="round" stroke-width="1.6" />
+            <path class="trail-base" :d="trail.d" stroke-dasharray="5 7" stroke-linecap="round" stroke-width="1.6" />
             <path
               ref="journeyPath"
+              class="trail-draw"
               :d="trail.d"
               stroke="url(#trailGradient)"
               stroke-linecap="round"
@@ -292,8 +282,8 @@ onBeforeUnmount(() => {
             />
             <g :transform="`translate(${plane.x} ${plane.y}) rotate(${plane.angle + 90}) translate(-12 -12)`" :opacity="planeOpacity">
               <path
+                class="trail-plane"
                 d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
-                fill="#8E6B2C"
               />
             </g>
           </svg>
@@ -345,32 +335,48 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+/* ---------- theme: the hero's variables ---------- */
 .places-explore {
-  --paper: #f8f5ee;
-  --parchment-50: #fdfbf7;
-  --ink: #1c1917;
-  --ink-soft: #57534e;
-  --ink-faint: #78716c;
-  --ink-pale: #a8a29e;
-  --line: rgba(120, 53, 15, 0.1);
-  --script-ink: #9f672f;
-  --bronze-400: #c5a059;
-  --bronze-500: #a98342;
-  --bronze-600: #8e6b2c;
-  --font-serif: "Cormorant Garamond", Georgia, serif;
-  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --bg: var(--color-cream, #f4efe6);
+  --ink: var(--color-green, #24382c);
+  --gold: var(--color-gold, #d4900f);
+  --gold-deep: color-mix(in srgb, var(--gold) 78%, #000);
+  --ink-soft: color-mix(in srgb, var(--ink) 80%, transparent);
+  --ink-faint: color-mix(in srgb, var(--ink) 62%, transparent);
+  --ink-pale: color-mix(in srgb, var(--ink) 42%, transparent);
+  --line: color-mix(in srgb, var(--gold) 30%, transparent);
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --font-num: "Crimson Text", Georgia, serif;
 
   position: relative;
   overflow-x: hidden;
   color: var(--ink-soft);
-  background: var(--paper);
-  background-image: radial-gradient(rgba(180, 160, 120, 0.08) 1px, transparent 0);
+  background: var(--bg);
+  background-image: radial-gradient(color-mix(in srgb, var(--gold) 12%, transparent) 1px, transparent 0);
   background-size: 28px 28px;
-  font-family: var(--font-sans);
+  font-family: inherit;
   -webkit-font-smoothing: antialiased;
 }
 .places-explore *, .places-explore *::before, .places-explore *::after { box-sizing: border-box; }
+
+/* soft cream fade at the top, so the dot pattern doesn't start with a hard edge */
+.places-explore::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 260px;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+}
+
+/* keep the content above that fade */
+.places-explore > * {
+  position: relative;
+  z-index: 1;
+}
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
@@ -379,18 +385,32 @@ onBeforeUnmount(() => {
 .heading { width: min(960px, 92vw); margin: 0 auto; }
 .title-script { display: block; width: 100%; height: auto; overflow: visible; }
 
-.title-guide { fill: none; stroke: rgba(159, 103, 47, 0.22); stroke-width: 1; stroke-dasharray: 1 7; stroke-linecap: round; }
-.title-ink { fill: var(--script-ink); stroke: var(--script-ink); stroke-width: 0.45; }
-.title-line { fill: none; stroke: var(--script-ink); stroke-width: 1.5; stroke-linecap: round; stroke-dasharray: 1; }
-.writing-tip { fill: var(--script-ink); filter: drop-shadow(0 0 3px rgba(159, 103, 47, 0.5)); }
+.title-guide { fill: none; stroke: color-mix(in srgb, var(--gold) 25%, transparent); stroke-width: 1; stroke-dasharray: 1 7; stroke-linecap: round; }
+.title-ink { fill: var(--gold); stroke: var(--gold); stroke-width: 0.45; }
+.title-line { fill: none; stroke: var(--gold); stroke-width: 1.5; stroke-linecap: round; stroke-dasharray: 1; }
+.writing-tip { fill: var(--gold); filter: drop-shadow(0 0 3px color-mix(in srgb, var(--gold) 55%, transparent)); }
 
-.hero__quote { margin: -0.25rem 0 0; font-family: var(--font-serif); font-style: italic; font-size: clamp(1.125rem, 2.2vw, 1.5rem); letter-spacing: 0.02em; color: var(--ink-faint); }
+.hero__quote {
+  margin: -0.25rem 0 0;
+  font-family: var(--font-heading, Georgia, serif);
+  font-style: italic;
+  font-size: clamp(1.125rem, 2.2vw, 1.5rem);
+  letter-spacing: 0.02em;
+  color: var(--ink-faint);
+}
 
 /* ---------- journey: compact zigzag ---------- */
 .journey { max-width: 70rem; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
 .journey__list { position: relative; display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 6rem; }
 .journey__trail { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .journey__trail-svg { width: 100%; height: 100%; overflow: visible; }
+
+/* trail colours follow the theme */
+.trail-base { stroke: var(--line); }
+.trail-stop--a { stop-color: var(--gold); }
+.trail-stop--b { stop-color: var(--gold); }
+.trail-stop--c { stop-color: var(--gold-deep); }
+.trail-plane { fill: var(--gold-deep); }
 
 .stop {
   position: relative; z-index: 1; display: flex; align-items: center; gap: 1.25rem; width: 58%;
@@ -405,41 +425,78 @@ onBeforeUnmount(() => {
 .stop__card {
   --tilt: 1.6deg;
   position: relative; overflow: hidden; width: 100%; aspect-ratio: 16 / 9;
-  background: #f5f5f4; border: 5px solid #fff; border-radius: 6px;
-  box-shadow: 0 18px 30px -10px rgba(60, 45, 20, 0.28), 0 4px 10px rgba(60, 45, 20, 0.12);
+  background: var(--bg); border: 5px solid var(--bg); border-radius: 6px;
+  box-shadow: 0 18px 30px -10px color-mix(in srgb, var(--ink) 28%, transparent), 0 4px 10px color-mix(in srgb, var(--ink) 12%, transparent);
   transform: rotate(var(--tilt));
   transition: transform 0.6s var(--ease), box-shadow 0.6s var(--ease);
 }
 .stop--left .stop__card { --tilt: -1.6deg; }
-.stop__card:hover { transform: rotate(0deg) translateY(-6px) scale(1.02); box-shadow: 0 26px 40px -12px rgba(110, 79, 27, 0.3), 0 6px 14px rgba(60, 45, 20, 0.14); }
+.stop__card:hover {
+  transform: rotate(0deg) translateY(-6px) scale(1.02);
+  box-shadow: 0 26px 40px -12px color-mix(in srgb, var(--gold) 35%, transparent), 0 6px 14px color-mix(in srgb, var(--ink) 14%, transparent);
+}
 .stop__card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 700ms var(--ease); }
 .stop__card:hover img { transform: scale(1.05); }
 
 .stop__meta { flex: 1 1 0; min-width: 0; text-align: left; }
-.stop__num { display: block; margin-bottom: 0.2rem; font-family: var(--font-serif); font-size: 0.8rem; letter-spacing: 0.1em; color: var(--bronze-600); }
-.stop__distance { display: block; margin-bottom: 0.3rem; font-family: var(--font-serif); font-size: clamp(1.4rem, 2.2vw, 1.9rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1; color: var(--bronze-600); }
-.stop__title { margin: 0 0 0.75rem; font-family: var(--font-serif); font-weight: 500; line-height: 1.2; font-size: clamp(1.05rem, 1.6vw, 1.35rem); color: var(--ink); }
+.stop__num {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-family: var(--font-num);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  color: var(--gold-deep);
+}
+.stop__num {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-family: var(--font-num);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: var(--gold-deep);
+}
+
+.stop__distance {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-family: var(--font-num);
+  font-size: clamp(1rem, 2vw, 2rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: var(--gold);
+}
+.stop__title {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-heading, Georgia, serif);
+  font-weight: 500; line-height: 1.2;
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+  color: var(--ink);
+}
 
 .stop__btn {
   display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem;
-  border-radius: 50%; border: 1px solid var(--bronze-400); background: none; color: var(--bronze-600);
+  border-radius: 50%; border: 1px solid var(--gold); background: none; color: var(--gold);
   cursor: pointer; transition: background 300ms, color 300ms;
 }
-.stop__btn:hover { background: var(--bronze-500); color: #fff; }
-.stop__btn:focus-visible { outline: 2px solid var(--bronze-400); outline-offset: 2px; }
+.stop__btn:hover { background: var(--gold); color: var(--bg); }
+.stop__btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .stop__btn svg { width: 0.9rem; height: 0.9rem; transition: transform 300ms; }
 .stop__btn:hover svg { transform: translateX(2px); }
 
 /* ---------- modal ---------- */
 .modal {
   position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem;
-  background: rgba(28, 25, 23, 0.6); backdrop-filter: blur(4px);
+  background: color-mix(in srgb, var(--ink) 55%, transparent); backdrop-filter: blur(4px);
   opacity: 0; pointer-events: none; transition: opacity 300ms;
 }
 .modal--open { opacity: 1; pointer-events: auto; }
 .modal__card {
   position: relative; width: 100%; max-width: 28rem; padding: 1.5rem;
-  background: var(--parchment-50); border: 1px solid rgba(197, 160, 89, 0.4); border-radius: 1.5rem;
+  background: var(--bg); border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent); border-radius: 1.5rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); color: var(--ink);
   transform: scale(0.95); transition: transform 300ms;
 }
@@ -449,15 +506,23 @@ onBeforeUnmount(() => {
   display: flex; align-items: center; justify-content: center; background: none; color: var(--ink-pale); cursor: pointer;
   transition: background 200ms, color 200ms;
 }
-.modal__close:hover { background: rgba(231, 229, 228, 0.5); color: var(--ink); }
+.modal__close:hover { background: color-mix(in srgb, var(--gold) 14%, transparent); color: var(--ink); }
 .modal__close svg { width: 1.25rem; height: 1.25rem; }
-.modal__distance { display: inline-block; margin-bottom: 0.25rem; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: var(--bronze-600); }
-.modal__title { margin: 0 0 0.75rem; font-family: var(--font-serif); font-size: 1.5rem; color: var(--ink); }
+.modal__distance {
+  display: inline-block; margin-bottom: 0.25rem; font-family: var(--font-num); font-size: 0.75rem; letter-spacing: 0.16em;
+  text-transform: uppercase; font-weight: 600; color: var(--gold-deep);
+}
+.modal__title { margin: 0 0 0.75rem; font-family: var(--font-heading, Georgia, serif); font-weight: 500; font-size: 1.5rem; color: var(--ink); }
 .modal__desc { margin: 0 0 1.5rem; font-size: 0.875rem; line-height: 1.625; color: var(--ink-soft); }
 .modal__footer { display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--line); }
-.modal__footer-label { font-family: var(--font-serif); font-style: italic; font-size: 0.75rem; color: var(--ink-pale); }
-.modal__btn { padding: 0.5rem 1.25rem; border: 0; border-radius: 999px; background: var(--bronze-500); color: #fff; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: background 200ms; }
-.modal__btn:hover { background: var(--bronze-600); }
+.modal__footer-label { font-family: var(--font-heading, Georgia, serif); font-style: italic; font-size: 0.85rem; color: var(--ink-pale); }
+.modal__btn {
+  padding: 0.6rem 1.4rem; border: 1px solid var(--gold); border-radius: 999px;
+  background: var(--gold); color: var(--bg);
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+  cursor: pointer; transition: background 200ms, color 200ms;
+}
+.modal__btn:hover { background: transparent; color: var(--gold-deep); }
 
 /* ---------- mobile: photo on top, details underneath, still alternating sides ---------- */
 @media (max-width: 767px) {
