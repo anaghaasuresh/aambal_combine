@@ -122,7 +122,7 @@ onMounted(() => {
       ScrollTrigger.create({
   trigger: heroEl.value,
   start: 'top top',
-  end: '+=280%', // slightly shorter than before, since there's only one reveal phase now
+  end: '+=180%', // slightly shorter than before, since there's only one reveal phase now
   pin: true,
   pinSpacing: true,
   scrub: true,

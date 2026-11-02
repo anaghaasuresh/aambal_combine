@@ -43,4 +43,7 @@ body {
   background: var(--color-cream);
   color: var(--color-green);
 }
+html {
+  scroll-behavior: smooth;
+}
 

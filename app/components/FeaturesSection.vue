@@ -1,5 +1,5 @@
 <template>
-  <section class="features">
+  <section class="features" id="about">
     <div ref="trackEl" class="features__track">
       <div ref="row1" class="features__row">
         <div class="features__media features__media--left">
@@ -79,6 +79,7 @@ onBeforeUnmount(() => {
 .features {
   background: var(--color-cream);
   padding: 6rem clamp(1.5rem, 6vw, 6rem);
+  scroll-margin-top: 100px;
 }
 
 .features__row {
