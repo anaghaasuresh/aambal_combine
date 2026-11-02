@@ -1,6 +1,6 @@
 <template>
   <section ref="heroEl" class="hero">
-    <div class="hero__stage">
+    <div class="hero__stage" :class="{ 'is-done': stageCream }">
       <div class="hero__ring hero__ring--outer"></div>
       <div class="hero__ring hero__ring--inner"></div>
 
@@ -15,30 +15,32 @@
       </div>
 
       <!-- dome overlay: rises over the still-pinned image, same timeline, guaranteed sync -->
-  <div ref="domeEl" class="hero__dome">
-  <div class="hero__dome-inner">
-    <div class="about__center">
-      <p class="about__statement">
-  <span v-for="(word, i) in statementWords" :key="i" class="about__word">{{ word }}&nbsp;</span>
-</p>
-    </div>
-  </div>
-</div>
+      <div ref="domeEl" class="hero__dome">
+        <div class="hero__dome-inner">
+          <div class="about__center">
+            <p class="about__statement">
+              <span v-for="(word, i) in statementWords" :key="i" class="about__word">{{ word }}&nbsp;</span>
+            </p>
+          </div>
+        </div>
       </div>
+    </div>
   </section>
 </template>
 
 <script setup>
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
 const statementWords = 'A serene riverside retreat embraced by lush greenery, Aambal Resort blends peaceful stays, elegant event spaces, and the beauty of nature to create a place where you can relax, reconnect, and celebrate lifes special moments.'.split(' ')
 const { $lenis } = useNuxtApp()
 const introDone = useState('introDone', () => false)
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 const heroEl = ref(null)
 const archEl = ref(null)
 const imgEl = ref(null)
 const domeEl = ref(null)
+const stageCream = ref(false) // flips to true after the intro, so no green can leak at the bottom edge
 
 let panDistance = 0
 function measurePan() {
@@ -101,6 +103,7 @@ onMounted(() => {
         onComplete: () => {
           unlockScroll()
           introDone.value = true
+          stageCream.value = true // arch is full-screen now, so the green behind it is never needed again
         },
       })
 
@@ -157,6 +160,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .hero { width: 100%; height: 100vh; }
 .hero__stage { position: relative; width: 100%; height: 100vh; overflow: hidden; background: var(--color-green); }
+.hero__stage.is-done { background: var(--color-cream); } /* after the intro, no green can show at the edge */
 
 .hero__arch {
   position: absolute; inset: 0; z-index: 2;
@@ -231,4 +235,6 @@ onBeforeUnmount(() => {
   transform: translateY(15px);
 }
 
+/* GSAP wraps the pinned hero in a .pin-spacer; make it cream too so no gap can show through */
+:global(.pin-spacer) { background: var(--color-cream); }
 </style>

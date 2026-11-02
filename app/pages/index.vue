@@ -1,3 +1,6 @@
 <template>
-    <HeroArch />
+  <HeroArch />
+  <ResortMap />
+  <StaySlider />
+  <placestovisit />
 </template>
