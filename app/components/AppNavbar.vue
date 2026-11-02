@@ -256,7 +256,7 @@ function closeMenu() {
 
 
 .nav__logo img {
-  width: 90px;
+  width: 50px;
   height: auto;
 
   display: block;
