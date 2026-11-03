@@ -162,10 +162,9 @@ background-color: #faf4ea;
 
   --dur: 1.1s;
   --ease: cubic-bezier(0.77, 0, 0.175, 1);
-
-  padding: 100px 0 80px;
+  padding: clamp(140px, 20vh, 240px) 0 clamp(200px, 20vh, 240px);
   overflow: hidden;
-  background: var(--bg);
+  background: #FAF4EA;
   color: var(--ink);
 }
 
@@ -182,7 +181,7 @@ background-color: #faf4ea;
 
 .showcase__title {
   max-width: 14em;
-  margin: 0 auto clamp(32px, 5vw, 64px);
+  margin: 0 auto clamp(48px, 7vw, 96px);
   padding: 0 20px;
   text-align: center;
   font-family: 'Playfair Display', serif;
@@ -215,6 +214,7 @@ background-color: #faf4ea;
 }
 
 .slot--left  { left: 0; }
+
 .slot--right { left: calc((100 - var(--sw)) * 1cqw); }
 
 .slot--center {
@@ -256,7 +256,7 @@ background-color: #faf4ea;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  margin-top: 28px;
+  margin-top: 48px;
 }
 
 .controls__btn,

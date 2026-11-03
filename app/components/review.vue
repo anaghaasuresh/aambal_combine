@@ -1,7 +1,6 @@
 <template>
   <section ref="root" class="gs">
     <header class="gs-head">
-      <p class="gs-eyebrow">Guest experiences</p>
       <h2 class="gs-title">Real Stories,<br /><em>Lasting Memories</em></h2>
       
     </header>

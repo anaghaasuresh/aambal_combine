@@ -54,7 +54,7 @@
       <!-- Layer 2: Editorial Headline Typography (Sandwiched behind the girl) -->
       <div ref="textRef" class="focus-layer focus-layer--text">
         <div class="focus-text-container">
-          <p class="focus-eyebrow">Mindful Sanctuary</p>
+          
           <h2 class="focus-title">
             <span class="focus-title__lead">Discover a living<br />experience</span>
           </h2>
@@ -158,11 +158,13 @@ onBeforeUnmount(() => {
 .focus-section {
   position: relative;
   width: 100%;
-  aspect-ratio: 1672 / 941;      
+  aspect-ratio: 1672 / 941;
+  margin-top: clamp(80px, 12vh, 180px);
+  margin-bottom: clamp(80px, 12vh, 180px);
   
   height: auto;
   min-height: 0;
-  background-color: #0e2916;
+  background-color: #FAF4EA;
   overflow: hidden;
 }
 
@@ -205,7 +207,7 @@ onBeforeUnmount(() => {
 }
 
 .focus-text-container {
-  max-width: 980px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -215,7 +217,7 @@ onBeforeUnmount(() => {
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #d6995c;
-  margin-bottom: clamp(16px, 2.5vw, 28px);
+  margin-bottom: clamp(26px, 2.5vw, 38px);
   opacity: 0.95;
   font-weight: 600;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85);
@@ -223,7 +225,7 @@ onBeforeUnmount(() => {
 
 .focus-title {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(34px, 5.2vw, 76px);
+  font-size: clamp(56px, 9.5vw, 150px);
   line-height: 1.15;
   letter-spacing: -0.01em;
   font-weight: 400;
