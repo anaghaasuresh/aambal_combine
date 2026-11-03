@@ -6,5 +6,5 @@
    <Gallery/>
    <focus/>
    <review/>
-   <footer/>  
+   <Footer/>  
 </template>

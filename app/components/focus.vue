@@ -158,7 +158,9 @@ onBeforeUnmount(() => {
 .focus-section {
   position: relative;
   width: 100%;
-  aspect-ratio: 1672 / 941;      
+  aspect-ratio: 1672 / 941; 
+  margin-top: clamp(80px, 12vh, 180px);
+  margin-bottom: clamp(80px, 12vh, 180px);     
   
   height: auto;
   min-height: 0;
@@ -205,7 +207,7 @@ onBeforeUnmount(() => {
 }
 
 .focus-text-container {
-  max-width: 980px;
+  max-width: 1500px;
   margin: 0 auto;
 }
 
@@ -222,9 +224,10 @@ onBeforeUnmount(() => {
 }
 
 .focus-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(34px, 5.2vw, 76px);
-  line-height: 1.15;
+  font-family: var(--font-heading);
+  /* font-family: 'Playfair Display', serif; */
+  font-size: clamp(66px, 10.5vw, 200px);
+  line-height: 1.05;
   letter-spacing: -0.01em;
   font-weight: 400;
   color: #ffffff;
