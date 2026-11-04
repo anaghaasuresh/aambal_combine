@@ -227,11 +227,13 @@ onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKeydown);
   observer?.disconnect();
   resizeObserver?.disconnect();
+  // in case the modal was open when the page changed, restore page scrolling
+  document.body.classList.remove("overflow-hidden");
 });
 </script>
 
 <template>
-  <div ref="rootRef" class="places-explore">
+  <div ref="rootRef" class="places-explore" id="places">
     <section class="hero">
       <h1 class="visually-hidden">Places to Explore</h1>
 
@@ -315,22 +317,25 @@ onBeforeUnmount(() => {
       </div>
     </main>
 
-    <div class="modal" :class="{ 'modal--open': modalOpen }" role="dialog" aria-modal="true" aria-labelledby="modalTitle" @click.self="closeModal">
-      <div class="modal__card" :class="{ 'modal__card--open': modalOpen }">
-        <button aria-label="Close dialog" class="modal__close" type="button" @click="closeModal">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-          </svg>
-        </button>
-        <span class="modal__distance">{{ activeStop?.distance }}</span>
-        <h3 id="modalTitle" class="modal__title">{{ activeStop?.title }}</h3>
-        <p class="modal__desc">{{ activeStop?.description }}</p>
-        <div class="modal__footer">
-          <span class="modal__footer-label">Riverside Exploration Guide</span>
-          <button class="modal__btn" type="button" @click="closeModal">Got It</button>
+    <!-- teleported to <body> so it sits above every section, not just this one -->
+    <Teleport to="body">
+      <div class="modal" :class="{ 'modal--open': modalOpen }" role="dialog" aria-modal="true" aria-labelledby="modalTitle" @click.self="closeModal">
+        <div class="modal__card" :class="{ 'modal__card--open': modalOpen }">
+          <button aria-label="Close dialog" class="modal__close" type="button" @click="closeModal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+            </svg>
+          </button>
+          <span class="modal__distance">{{ activeStop?.distance }}</span>
+          <h3 id="modalTitle" class="modal__title">{{ activeStop?.title }}</h3>
+          <p class="modal__desc">{{ activeStop?.description }}</p>
+          <div class="modal__footer">
+            <span class="modal__footer-label">Riverside Exploration Guide</span>
+            <button class="modal__btn" type="button" @click="closeModal">Got It</button>
+          </div>
         </div>
       </div>
-    </div>
+    </Teleport>
   </div>
 </template>
 
@@ -349,6 +354,7 @@ onBeforeUnmount(() => {
   --font-num: "Crimson Text", Georgia, serif;
 
   position: relative;
+  isolation: isolate; /* keeps this section's z-index layers inside it */
   overflow-x: hidden;
   color: var(--ink-soft);
   background: var(--bg);
@@ -370,12 +376,6 @@ onBeforeUnmount(() => {
   z-index: 0;
   pointer-events: none;
   background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
-}
-
-/* keep the content above that fade */
-.places-explore > * {
-  position: relative;
-  z-index: 1;
 }
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
@@ -412,12 +412,13 @@ onBeforeUnmount(() => {
 .trail-stop--c { stop-color: var(--gold-deep); }
 .trail-plane { fill: var(--gold-deep); }
 
+/* hidden cards ignore clicks until they animate in */
 .stop {
   position: relative; z-index: 1; display: flex; align-items: center; gap: 1.25rem; width: 58%;
-  opacity: 0; transform: translateY(38px);
+  opacity: 0; transform: translateY(38px); pointer-events: none;
   transition: opacity 0.85s var(--ease), transform 0.85s var(--ease);
 }
-.stop.is-visible { opacity: 1; transform: translateY(0); }
+.stop.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
 .stop--right { align-self: flex-end; flex-direction: row; }
 .stop--left { align-self: flex-start; flex-direction: row-reverse; }
 
@@ -443,19 +444,10 @@ onBeforeUnmount(() => {
   display: block;
   margin-bottom: 0.3rem;
   font-family: var(--font-num);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  font-variant-numeric: tabular-nums;
-  color: var(--gold-deep);
-}
-.stop__num {
-  display: block;
-  margin-bottom: 0.3rem;
-  font-family: var(--font-num);
   font-size: 1rem;
   font-weight: 400;
   letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
   color: var(--gold-deep);
 }
 
@@ -467,8 +459,10 @@ onBeforeUnmount(() => {
   font-weight: 400;
   letter-spacing: -0.01em;
   line-height: 1;
+  font-variant-numeric: tabular-nums;
   color: var(--gold);
 }
+
 .stop__title {
   margin: 0 0 0.75rem;
   font-family: var(--font-heading, Georgia, serif);
@@ -487,9 +481,9 @@ onBeforeUnmount(() => {
 .stop__btn svg { width: 0.9rem; height: 0.9rem; transition: transform 300ms; }
 .stop__btn:hover svg { transform: translateX(2px); }
 
-/* ---------- modal ---------- */
+/* ---------- modal (teleported to body, so it sits above the whole page) ---------- */
 .modal {
-  position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem;
+  position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1rem;
   background: color-mix(in srgb, var(--ink) 55%, transparent); backdrop-filter: blur(4px);
   opacity: 0; pointer-events: none; transition: opacity 300ms;
 }
@@ -543,6 +537,6 @@ onBeforeUnmount(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stop { opacity: 1; transform: none; transition: none; }
+  .stop { opacity: 1; transform: none; transition: none; pointer-events: auto; }
 }
 </style>
