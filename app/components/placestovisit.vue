@@ -354,7 +354,7 @@ onBeforeUnmount(() => {
   --font-num: "Crimson Text", Georgia, serif;
 
   position: relative;
-  isolation: isolate; /* keeps this section's z-index layers inside it */
+  isolation: isolate; 
   overflow-x: hidden;
   color: var(--ink-soft);
   background: var(--bg);
@@ -412,7 +412,7 @@ onBeforeUnmount(() => {
 .trail-stop--c { stop-color: var(--gold-deep); }
 .trail-plane { fill: var(--gold-deep); }
 
-/* hidden cards ignore clicks until they animate in */
+
 .stop {
   position: relative; z-index: 1; display: flex; align-items: center; gap: 1.25rem; width: 58%;
   opacity: 0; transform: translateY(38px); pointer-events: none;
@@ -481,7 +481,7 @@ onBeforeUnmount(() => {
 .stop__btn svg { width: 0.9rem; height: 0.9rem; transition: transform 300ms; }
 .stop__btn:hover svg { transform: translateX(2px); }
 
-/* ---------- modal (teleported to body, so it sits above the whole page) ---------- */
+
 .modal {
   position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1rem;
   background: color-mix(in srgb, var(--ink) 55%, transparent); backdrop-filter: blur(4px);

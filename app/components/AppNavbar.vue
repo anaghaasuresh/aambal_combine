@@ -1,5 +1,8 @@
 <template>
-  <header class="nav" :class="{ 'nav--visible': introDone }">
+  <header
+    class="nav"
+    :class="{ 'nav--visible': isVisible, 'nav--solid': isSolid }"
+  >
 
     <!-- MENU -->
     <div class="menu-wrapper">
@@ -8,6 +11,7 @@
         class="nav__menu"
         type="button"
         aria-label="Open menu"
+        :aria-expanded="menuOpen"
         @click="menuOpen = !menuOpen"
       >
         <span class="nav__lines">
@@ -21,25 +25,11 @@
       <Transition name="menu-dropdown">
         <div v-if="menuOpen" class="menu-dropdown">
 
-          <a href="#hero" @click="closeMenu">
-            Home
-          </a>
-
-          <a href="#about" @click="closeMenu">
-            About
-          </a>
-
-          <a href="#specials" @click="closeMenu">
-            Specials
-          </a>
-
-          <a href="#events" @click="closeMenu">
-            Events
-          </a>
-
-          <a href="#gallery" @click="closeMenu">
-            Gallery
-          </a>
+          <NuxtLink to="/#hero" @click="closeMenu">Home</NuxtLink>
+          <NuxtLink to="/#about" @click="closeMenu">About</NuxtLink>
+          <NuxtLink to="/#specials" @click="closeMenu">Specials</NuxtLink>
+          <NuxtLink to="/#events" @click="closeMenu">Events</NuxtLink>
+          <NuxtLink to="/#gallery" @click="closeMenu">Gallery</NuxtLink>
 
         </div>
       </Transition>
@@ -48,15 +38,15 @@
 
 
     <!-- CENTER LOGO -->
-    <a href="/" class="nav__logo">
+    <NuxtLink to="/" class="nav__logo">
       <img src="/images/logo_aambal.png" alt="Aambal Resort" />
-    </a>
+    </NuxtLink>
 
 
     <!-- RIGHT SIDE -->
     <div class="nav__actions">
       <a href="#" class="nav__link">Contact</a>
-      <a href="#" class="nav__cta">Book a stay</a>
+      <NuxtLink to="/book" class="nav__cta">Book a stay</NuxtLink>
     </div>
 
   </header>
@@ -64,13 +54,27 @@
 
 
 <script setup>
+// Route of your booking page
+const BOOKING_PATH = '/book'
+
+const route = useRoute()
 const introDone = useState('introDone', () => false)
 
 const menuOpen = ref(false)
 
+// The intro animation only runs on the home page, so on every other page
+// the navbar must be visible straight away.
+const isVisible = computed(() => introDone.value || route.path !== '/')
+
+// The booking page has a light background, so the navbar switches to dark text on cream.
+const isSolid = computed(() => route.path.startsWith(BOOKING_PATH))
+
 function closeMenu() {
   menuOpen.value = false
 }
+
+// Close the dropdown whenever the route changes
+watch(() => route.fullPath, closeMenu)
 </script>
 
 
@@ -107,7 +111,9 @@ function closeMenu() {
 
   transition:
     opacity 0.8s ease,
-    transform 0.8s ease;
+    transform 0.8s ease,
+    background 0.3s ease,
+    color 0.3s ease;
 }
 
 
@@ -115,6 +121,14 @@ function closeMenu() {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+
+/* Light-page variant (booking page) */
+.nav--solid {
+  color: #183c28;
+  background: #faf4ea;
+  border-bottom: 1px solid #e5dccb;
 }
 
 
@@ -314,15 +328,30 @@ function closeMenu() {
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 999px;
 
+  white-space: nowrap;
+
   transition:
     background 0.3s ease,
-    color 0.3s ease;
+    color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 
 .nav__cta:hover {
   background: #fff;
   color: var(--color-plum);
+}
+
+
+.nav--solid .nav__cta {
+  border-color: rgba(24, 60, 40, 0.45);
+}
+
+
+.nav--solid .nav__cta:hover {
+  background: #183c28;
+  border-color: #183c28;
+  color: #fff;
 }
 
 

@@ -10,10 +10,10 @@ const images = [
   { src: '/image4.webp', alt: 'Swimming pool 2' },
 ]
 
-const DUR = 1100   
-const DELAY = 5500   
-const STAGGER = 0 
-const END = DUR * 1.2 + STAGGER * 2 + 80  
+const DUR = 1100
+const DELAY = 5500
+const STAGGER = 0
+const END = DUR * 1.2 + STAGGER * 2 + 80
 
 const total = images.length
 const index = ref(0)
@@ -21,7 +21,6 @@ const galleryEl = ref(null)
 
 const wrap = (n) => (n + total) % total
 const targetFor = (name, i) => (name === 'left' ? wrap(i - 1) : name === 'right' ? wrap(i + 1) : i)
-
 
 let uid = 0
 const makeLayer = (i, open) => ({ id: ++uid, i, open })
@@ -60,14 +59,12 @@ async function go(step) {
   if (reduceMotion) {
     slots.forEach((s) => (s.layers = [makeLayer(targetFor(s.name, index.value), true)]))
     busy = false
-  return
+    return
   }
 
-  
   slots.forEach((s) => s.layers.push(makeLayer(targetFor(s.name, index.value), false)))
   await nextTick()
 
-  
   await Promise.all(slots.map((s) => ensureLoaded(images[s.layers[s.layers.length - 1].i].src)))
 
   if (galleryEl.value) void galleryEl.value.offsetWidth
@@ -148,7 +145,6 @@ onBeforeUnmount(stopAutoplay)
 
 <style scoped>
 .showcase {
-background-color: #faf4ea;
   --ink: #0d0d0d;
   --pill: #efeeeb;
 
@@ -159,6 +155,9 @@ background-color: #faf4ea;
   --side-ratio: 1.017;
   --stage-ratio: 3.15;
   --side-top: 4;
+
+  /* Corner radius of the photos, in % of the gallery width (cqw) */
+  --r: 2;
 
   --dur: 1.1s;
   --ease: cubic-bezier(0.77, 0, 0.175, 1);
@@ -176,6 +175,7 @@ background-color: #faf4ea;
     --side-ratio: 0.7;
     --stage-ratio: 1.97;
     --side-top: 6;
+    --r: 2.5;
   }
 }
 
@@ -204,6 +204,8 @@ background-color: #faf4ea;
   top: 0;
   overflow: hidden;
   background: whitesmoke;
+  border-radius: calc(var(--r) * 1cqw);
+  isolation: isolate; /* keeps the rounded clip working in Safari while the image scales */
 }
 
 .slot--left,
@@ -225,7 +227,6 @@ background-color: #faf4ea;
 }
 
 .slot.is-clickable { cursor: pointer; }
-
 
 .layer {
   position: absolute;
@@ -250,7 +251,9 @@ background-color: #faf4ea;
 }
 
 .layer.is-open img {
-  transform: scale(1);}
+  transform: scale(1);
+}
+
 .controls {
   display: flex;
   justify-content: center;

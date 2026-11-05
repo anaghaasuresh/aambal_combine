@@ -1,19 +1,16 @@
 <template>
   <div class="layout-root">
     <!-- 1. Pinned Background Footer at z-index 1 -->
+    <!-- opacity/visibility are driven by GSAP (scrubbed with progress), NOT by Vue bindings -->
     <div
       class="footer-wrapper"
       ref="footerWrapperRef"
-      :style="{
-        opacity: footerVisible ? 1 : 0,
-        pointerEvents: footerActive ? 'auto' : 'none',
-        visibility: footerVisible ? 'visible' : 'hidden',
-      }"
+      :style="{ pointerEvents: footerActive ? 'auto' : 'none' }"
     >
       <Footer ref="footerCompRef" />
     </div>
 
-    <!-- 2. Main Page Content at z-index 2 (No filter or clipPath here, so HeroArch pins cleanly!) -->
+    <!-- 2. Main Page Content at z-index 2 -->
     <div
       class="main-content"
       ref="mainContentRef"
@@ -33,7 +30,12 @@ import { useNuxtApp } from '#app'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
+  // Mobile URL-bar show/hide fires resize; don't let it rebuild triggers mid-scroll
+  ScrollTrigger.config({ ignoreMobileResize: true })
 }
+
+// Grab Nuxt context at setup time (calling useNuxtApp after an `await` can lose context)
+const { $lenis } = useNuxtApp()
 
 const footerWrapperRef = ref(null)
 const footerCompRef = ref(null)
@@ -41,17 +43,20 @@ const mainContentRef = ref(null)
 
 const paddingHeight = ref(0)
 const transitionDistance = ref(0)
-const footerVisible = ref(false)
 const footerActive = ref(false)
 
+// Fraction of the scroll range over which the green footer panel fades in/out
+const PANEL_FADE_RANGE = 0.25
+
 let ctx = null
+let resizeTimer = null
 
 async function updateSizes() {
   if (typeof window === 'undefined') return
   const vh = window.innerHeight
-  // The distance needed to bring the bottom of the review section above the footer:
+  // Distance needed to bring the bottom of the review section above the footer
   const travelDist = vh * 0.78
-  // Dedicated buffer so the review section stays 100% full view at rest first:
+  // Buffer so the review section stays fully in view at rest first
   const bufferDist = vh * 0.45
 
   transitionDistance.value = travelDist
@@ -59,11 +64,12 @@ async function updateSizes() {
 
   await nextTick()
   ScrollTrigger.refresh()
+  if ($lenis) $lenis.resize()
+}
 
-  const { $lenis } = useNuxtApp()
-  if ($lenis) {
-    $lenis.resize()
-  }
+function onResize() {
+  clearTimeout(resizeTimer)
+  resizeTimer = setTimeout(updateSizes, 150)
 }
 
 onMounted(async () => {
@@ -71,16 +77,19 @@ onMounted(async () => {
   if (typeof window === 'undefined') return
 
   await updateSizes()
-  window.addEventListener('resize', updateSizes)
+  window.addEventListener('resize', onResize)
 
   ctx = gsap.context(() => {
     const main = mainContentRef.value
-    if (!main) return
+    const wrapper = footerWrapperRef.value
+    if (!main || !wrapper) return
 
-    // Find the review section (.gs) at the bottom of the page
+    // Hidden at rest; fully controlled by scroll progress from here on
+    gsap.set(wrapper, { opacity: 0, visibility: 'hidden' })
+
+    // Review section (.gs) at the bottom of the page
     const reviewEl = main.querySelector('.gs')
 
-    // Unified transition timeline that activates only after scrolling past the review section
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: main,
@@ -89,22 +98,25 @@ onMounted(async () => {
         scrub: true,
         onUpdate: (self) => {
           const p = self.progress
-          footerVisible.value = p > 0.001
+
+          // Smooth fade in BOTH directions (no on/off snap)
+          gsap.set(wrapper, {
+            opacity: Math.min(1, p / PANEL_FADE_RANGE),
+            visibility: p > 0 ? 'visible' : 'hidden',
+          })
+
           footerActive.value = p > 0.35
           footerCompRef.value?.setAnimationProgress?.(p)
         },
-        onEnter: () => {
-          footerVisible.value = true
-        },
         onLeaveBack: () => {
-          footerVisible.value = false
+          gsap.set(wrapper, { opacity: 0, visibility: 'hidden' })
           footerActive.value = false
           footerCompRef.value?.setAnimationProgress?.(0)
         },
       },
     })
 
-    // Smoothly clips ONLY the review section into the floating rounded card as it rises over the footer
+    // Clip ONLY the review section into a floating rounded card as it rises over the footer
     if (reviewEl) {
       tl.fromTo(
         reviewEl,
@@ -128,8 +140,9 @@ onMounted(async () => {
 
 onUnmounted(() => {
   if (typeof window !== 'undefined') {
-    window.removeEventListener('resize', updateSizes)
+    window.removeEventListener('resize', onResize)
   }
+  clearTimeout(resizeTimer)
   if (ctx) ctx.revert()
 })
 </script>
@@ -152,7 +165,6 @@ onUnmounted(() => {
   pointer-events: auto;
 }
 
-/* Floating card shadow when review section lifts over footer */
 :deep(.gs) {
   will-change: clip-path, filter;
 }
@@ -170,5 +182,9 @@ onUnmounted(() => {
   justify-content: flex-end;
   overflow: hidden;
   will-change: opacity, transform;
+
+  /* Initial state; GSAP takes over once the trigger is created */
+  opacity: 0;
+  visibility: hidden;
 }
 </style>

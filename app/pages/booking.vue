@@ -671,6 +671,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 
+definePageMeta({
+  alias: '/book'
+})
+
 useHead({
   title: 'Book Your Stay | Aambal Resort, Kerala',
   meta: [
@@ -1068,6 +1072,7 @@ onMounted(() => {
 <style scoped>
 .booking-page {
   position: relative;
+  margin-top:130px;
   min-height: 100vh;
   background-color: #faf4ea;
   color: #24201c;
