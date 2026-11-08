@@ -1,15 +1,11 @@
 <script setup lang="ts">
 import { TITLE_PATH } from "~/utils/placesTitlePath";
-import cochinAirport from "~/assets/images/airport.png";
 import metroAluva from "~/assets/images/metro.jpg";
-import railwayAluva from "~/assets/images/aluvarail.jpg";
-import mattancherry from "~/assets/images/palace.avif";
 import keralaMuseum from "~/assets/images/museum.avif";
-import hillPalace from "~/assets/images/hillpalace.avif";
 import indoPortuguese from "~/assets/images/indomuseum.avif";
+import hillPalace from "~/assets/images/hillpalace.avif";
+import mattancherry from "~/assets/images/palace.avif";
 import athirappilly from "~/assets/images/waterfall.avif";
-
-const { $lenis } = useNuxtApp();
 
 type Stop = {
   num: string;
@@ -18,18 +14,22 @@ type Stop = {
   alt: string;
   description: string;
   image: string;
+  mapQuery: string; // what Google Maps searches for when the arrow is clicked
 };
 
 const stops: Stop[] = [
-  { num: "01", distance: "6.7 KM", title: "Cochin International Airport", alt: "Cochin International Airport Architectural Hangar", description: "The world's first fully solar-powered airport, marrying traditional Kerala architectural roofs with sweeping glass atrium terminals.", image: cochinAirport },
-  { num: "02", distance: "8.4 KM", title: "Railway Station Aluva", alt: "Aluva Railway Platform in Sunrise Light", description: "Historic rail stop overlooking the Periyar River banks, kissed by golden morning light and passenger trains heading across South India.", image: railwayAluva },
-  { num: "03", distance: "9.0 KM", title: "Kerala Museum", alt: "Traditional Kerala Museum with Bougainvillea Courtyard", description: "Surrounded by vibrant bougainvillea, this serene cultural enclave showcases centuries of Kerala fine arts, statues, and historical tableaux.", image: keralaMuseum },
-  { num: "04", distance: "13.0 KM", title: "Indo-Portuguese Museum", alt: "Colonial Azulejo Tile Architectural Facade", description: "A testament to Fort Kochi's rich colonial heritage, featuring ornamental blue azulejo tiles, carved teak altars, and vestments.", image: indoPortuguese },
-  { num: "05", distance: "7.0 KM", title: "Metro Aluva", alt: "Modern Rapid Transit Train in Canopy Station", description: "Sleek rapid transit station connecting travelers smoothly to Cochin city center, Marine Drive, and Kochi water metro ferries.", image: metroAluva },
-  { num: "06", distance: "30.0 KM", title: "Hill Palace Museum", alt: "Hill Palace Sprawling Estate under Ancient Shade Trees", description: "The largest archaeological palace complex in Kerala, nestled under centuries-old banyan canopies with royal carriage collections and golden thrones.", image: hillPalace },
-  { num: "07", distance: "37.0 KM", title: "Mattancherry Palace", alt: "Mattancherry Palace Historic Colonial Courtyard with Palms", description: "Also known as the Dutch Palace, celebrated for its legendary mythological murals executed in warm earth tempera hues and wood ceilings.", image: mattancherry },
-  { num: "08", distance: "44.0 KM", title: "Alappuzha & Waterfalls", alt: "Lush Tropical Waterfall Plunging into Rocky River", description: "Lush tropical cascades gushing over dark granite cliffs and tranquil emerald backwaters sheltered by coconut palms.", image: athirappilly },
+  { num: "01", distance: "7.0 KM", title: "Metro Aluva", alt: "Modern Rapid Transit Train in Canopy Station", description: "Sleek rapid transit station connecting travelers smoothly to Cochin city center, Marine Drive, and Kochi water metro ferries.", image: metroAluva, mapQuery: "Aluva Metro Station, Kochi, Kerala" },
+  { num: "02", distance: "9.0 KM", title: "Kerala Museum", alt: "Traditional Kerala Museum with Bougainvillea Courtyard", description: "Surrounded by vibrant bougainvillea, this serene cultural enclave showcases centuries of Kerala fine arts, statues, and historical tableaux.", image: keralaMuseum, mapQuery: "Kerala Museum, Kochi, Kerala" },
+  { num: "03", distance: "13.0 KM", title: "Indo-Portuguese Museum", alt: "Colonial Azulejo Tile Architectural Facade", description: "A testament to Fort Kochi's rich colonial heritage, featuring ornamental blue azulejo tiles, carved teak altars, and vestments.", image: indoPortuguese, mapQuery: "Indo-Portuguese Museum, Fort Kochi, Kerala" },
+  { num: "04", distance: "30.0 KM", title: "Hill Palace Museum", alt: "Hill Palace Sprawling Estate under Ancient Shade Trees", description: "The largest archaeological palace complex in Kerala, nestled under centuries-old banyan canopies with royal carriage collections and golden thrones.", image: hillPalace, mapQuery: "Hill Palace Museum, Tripunithura, Kerala" },
+  { num: "05", distance: "37.0 KM", title: "Mattancherry Palace", alt: "Mattancherry Palace Historic Colonial Courtyard with Palms", description: "Also known as the Dutch Palace, celebrated for its legendary mythological murals executed in warm earth tempera hues and wood ceilings.", image: mattancherry, mapQuery: "Mattancherry Palace, Kochi, Kerala" },
+  { num: "06", distance: "44.0 KM", title: "Alappuzha & Waterfalls", alt: "Lush Tropical Waterfall Plunging into Rocky River", description: "Lush tropical cascades gushing over dark granite cliffs and tranquil emerald backwaters sheltered by coconut palms.", image: athirappilly, mapQuery: "Athirappilly Falls, Kerala" },
 ];
+
+/* builds a Google Maps search link for one specific place */
+function mapsLink(query: string) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
 
 /* ---------- title "pen" geometry (viewBox 780 x 120) ---------- */
 const TITLE = {
@@ -138,22 +138,6 @@ function measurePath() {
   plane.angle = (Math.atan2(end.y - prev.y, end.x - prev.x) * 180) / Math.PI;
 }
 
-/* ---------- popup ---------- */
-const modalOpen = ref(false);
-const activeStop = ref<Stop | null>(null);
-
-function openModal(stop: Stop) {
-  activeStop.value = stop;
-  modalOpen.value = true;
-  document.body.classList.add("overflow-hidden");
-  $lenis?.stop();
-}
-function closeModal() {
-  modalOpen.value = false;
-  document.body.classList.remove("overflow-hidden");
-  $lenis?.start();
-}
-
 /* ---------- scroll ---------- */
 function updateTitle() {
   const el = rootRef.value;
@@ -189,10 +173,6 @@ function handleScroll() {
   });
 }
 
-function onKeydown(e: KeyboardEvent) {
-  if (e.key === "Escape" && modalOpen.value) closeModal();
-}
-
 let observer: IntersectionObserver | null = null;
 let resizeObserver: ResizeObserver | null = null;
 
@@ -204,7 +184,6 @@ onMounted(() => {
 
   window.addEventListener("scroll", handleScroll, { passive: true });
   window.addEventListener("resize", handleScroll);
-  window.addEventListener("keydown", onKeydown);
 
   // rebuild the trail whenever the card layout changes size (resize, fonts, images)
   resizeObserver = new ResizeObserver(() => buildTrail());
@@ -224,11 +203,8 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener("scroll", handleScroll);
   window.removeEventListener("resize", handleScroll);
-  window.removeEventListener("keydown", onKeydown);
   observer?.disconnect();
   resizeObserver?.disconnect();
-  // in case the modal was open when the page changed, restore page scrolling
-  document.body.classList.remove("overflow-hidden");
 });
 </script>
 
@@ -307,35 +283,21 @@ onBeforeUnmount(() => {
             <span class="stop__num">{{ stop.num }}</span>
             <span class="stop__distance">{{ stop.distance }}</span>
             <h2 class="stop__title">{{ stop.title }}</h2>
-            <button :aria-label="`Explore ${stop.title}`" class="stop__btn" type="button" @click="openModal(stop)">
+            <a
+              class="stop__btn"
+              :href="mapsLink(stop.mapQuery)"
+              target="_blank"
+              rel="noopener noreferrer"
+              :aria-label="`Open ${stop.title} in Google Maps`"
+            >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
               </svg>
-            </button>
+            </a>
           </div>
         </article>
       </div>
     </main>
-
-    <!-- teleported to <body> so it sits above every section, not just this one -->
-    <Teleport to="body">
-      <div class="modal" :class="{ 'modal--open': modalOpen }" role="dialog" aria-modal="true" aria-labelledby="modalTitle" @click.self="closeModal">
-        <div class="modal__card" :class="{ 'modal__card--open': modalOpen }">
-          <button aria-label="Close dialog" class="modal__close" type="button" @click="closeModal">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-            </svg>
-          </button>
-          <span class="modal__distance">{{ activeStop?.distance }}</span>
-          <h3 id="modalTitle" class="modal__title">{{ activeStop?.title }}</h3>
-          <p class="modal__desc">{{ activeStop?.description }}</p>
-          <div class="modal__footer">
-            <span class="modal__footer-label">Riverside Exploration Guide</span>
-            <button class="modal__btn" type="button" @click="closeModal">Got It</button>
-          </div>
-        </div>
-      </div>
-    </Teleport>
   </div>
 </template>
 
@@ -348,7 +310,6 @@ onBeforeUnmount(() => {
   --gold-deep: color-mix(in srgb, var(--gold) 78%, #000);
   --ink-soft: color-mix(in srgb, var(--ink) 80%, transparent);
   --ink-faint: color-mix(in srgb, var(--ink) 62%, transparent);
-  --ink-pale: color-mix(in srgb, var(--ink) 42%, transparent);
   --line: color-mix(in srgb, var(--gold) 30%, transparent);
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --font-num: "Crimson Text", Georgia, serif;
@@ -380,15 +341,15 @@ onBeforeUnmount(() => {
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-/* ---------- hero: the written title ---------- */
+/* ---------- hero: the written title (darker gold) ---------- */
 .hero { max-width: 80rem; margin: 0 auto; padding: 3.5rem 1.5rem 1.5rem; text-align: center; }
 .heading { width: min(960px, 92vw); margin: 0 auto; }
 .title-script { display: block; width: 100%; height: auto; overflow: visible; }
 
-.title-guide { fill: none; stroke: color-mix(in srgb, var(--gold) 25%, transparent); stroke-width: 1; stroke-dasharray: 1 7; stroke-linecap: round; }
-.title-ink { fill: var(--gold); stroke: var(--gold); stroke-width: 0.45; }
-.title-line { fill: none; stroke: var(--gold); stroke-width: 1.5; stroke-linecap: round; stroke-dasharray: 1; }
-.writing-tip { fill: var(--gold); filter: drop-shadow(0 0 3px color-mix(in srgb, var(--gold) 55%, transparent)); }
+.title-guide { fill: none; stroke: color-mix(in srgb, var(--gold-deep) 35%, transparent); stroke-width: 1; stroke-dasharray: 1 7; stroke-linecap: round; }
+.title-ink { fill: var(--gold-deep); stroke: var(--gold-deep); stroke-width: 0.45; }
+.title-line { fill: none; stroke: var(--gold-deep); stroke-width: 1.5; stroke-linecap: round; stroke-dasharray: 1; }
+.writing-tip { fill: var(--gold-deep); filter: drop-shadow(0 0 3px color-mix(in srgb, var(--gold-deep) 55%, transparent)); }
 
 .hero__quote {
   margin: -0.25rem 0 0;
@@ -471,52 +432,16 @@ onBeforeUnmount(() => {
   color: var(--ink);
 }
 
+/* arrow link: opens Google Maps for that place */
 .stop__btn {
   display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem;
   border-radius: 50%; border: 1px solid var(--gold); background: none; color: var(--gold);
-  cursor: pointer; transition: background 300ms, color 300ms;
+  text-decoration: none; cursor: pointer; transition: background 300ms, color 300ms;
 }
 .stop__btn:hover { background: var(--gold); color: var(--bg); }
 .stop__btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .stop__btn svg { width: 0.9rem; height: 0.9rem; transition: transform 300ms; }
 .stop__btn:hover svg { transform: translateX(2px); }
-
-/* ---------- modal (teleported to body, so it sits above the whole page) ---------- */
-.modal {
-  position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1rem;
-  background: color-mix(in srgb, var(--ink) 55%, transparent); backdrop-filter: blur(4px);
-  opacity: 0; pointer-events: none; transition: opacity 300ms;
-}
-.modal--open { opacity: 1; pointer-events: auto; }
-.modal__card {
-  position: relative; width: 100%; max-width: 28rem; padding: 1.5rem;
-  background: var(--bg); border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent); border-radius: 1.5rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); color: var(--ink);
-  transform: scale(0.95); transition: transform 300ms;
-}
-.modal__card--open { transform: scale(1); }
-.modal__close {
-  position: absolute; top: 1rem; right: 1rem; width: 2.25rem; height: 2.25rem; border-radius: 50%; border: 0;
-  display: flex; align-items: center; justify-content: center; background: none; color: var(--ink-pale); cursor: pointer;
-  transition: background 200ms, color 200ms;
-}
-.modal__close:hover { background: color-mix(in srgb, var(--gold) 14%, transparent); color: var(--ink); }
-.modal__close svg { width: 1.25rem; height: 1.25rem; }
-.modal__distance {
-  display: inline-block; margin-bottom: 0.25rem; font-family: var(--font-num); font-size: 0.75rem; letter-spacing: 0.16em;
-  text-transform: uppercase; font-weight: 600; color: var(--gold-deep);
-}
-.modal__title { margin: 0 0 0.75rem; font-family: var(--font-heading, Georgia, serif); font-weight: 500; font-size: 1.5rem; color: var(--ink); }
-.modal__desc { margin: 0 0 1.5rem; font-size: 0.875rem; line-height: 1.625; color: var(--ink-soft); }
-.modal__footer { display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--line); }
-.modal__footer-label { font-family: var(--font-heading, Georgia, serif); font-style: italic; font-size: 0.85rem; color: var(--ink-pale); }
-.modal__btn {
-  padding: 0.6rem 1.4rem; border: 1px solid var(--gold); border-radius: 999px;
-  background: var(--gold); color: var(--bg);
-  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
-  cursor: pointer; transition: background 200ms, color 200ms;
-}
-.modal__btn:hover { background: transparent; color: var(--gold-deep); }
 
 /* ---------- mobile: photo on top, details underneath, still alternating sides ---------- */
 @media (max-width: 767px) {

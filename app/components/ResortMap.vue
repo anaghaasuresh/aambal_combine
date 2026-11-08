@@ -68,10 +68,34 @@ function onStageClick(e: MouseEvent) {
   const y = (((e.clientY - r.top) / r.height) * 100).toFixed(1);
   console.log(`x: ${x}, y: ${y}`);
 }
+
+/* ───────────── NEW: pin this section so the next one slides over it ───────────── */
+const rootEl = ref<HTMLElement | null>(null);
+let ro: ResizeObserver | null = null;
+
+// pin when the section's BOTTOM reaches the bottom of the screen
+function updatePinTop() {
+  if (!rootEl.value) return;
+  const top = Math.min(0, window.innerHeight - rootEl.value.offsetHeight);
+  rootEl.value.style.setProperty("--pin-top", `${top}px`);
+}
+
+onMounted(() => {
+  updatePinTop();
+  ro = new ResizeObserver(updatePinTop); // fires when the image loads or resizes
+  if (rootEl.value) ro.observe(rootEl.value);
+  window.addEventListener("resize", updatePinTop);
+});
+
+onBeforeUnmount(() => {
+  ro?.disconnect();
+  window.removeEventListener("resize", updatePinTop);
+});
 </script>
 
 <template>
-  <section class="reveal-map" :style="{ '--top': topColor, '--gap': gap }">
+  <!-- CHANGED: added ref="rootEl" -->
+  <section ref="rootEl" class="reveal-map" :style="{ '--top': topColor, '--gap': gap }">
     <div ref="stageEl" class="stage" @click="onStageClick">
       <!-- 1. full aerial photo, uncropped: the section height follows the image -->
       <img :src="aerialMap" alt="Resort aerial map" class="aerial" draggable="false" />
@@ -153,8 +177,9 @@ function onStageClick(e: MouseEvent) {
   --gold-deep: color-mix(in srgb, var(--gold) 78%, #000);
   --font-heading-stack: var(--font-heading, Georgia, serif);
 
-  position: relative;
-  z-index: 2;              /* paints above the pinned hero's bottom edge */
+  position: sticky;                 /* CHANGED: was relative. Stays put while the next section slides over */
+  top: var(--pin-top, 0px);         /* NEW: set by JS */
+  z-index: 0;                       /* CHANGED: was 2. The focus section (z-index 1) must paint above */
   margin-top: -2px;        /* hides any sub-pixel seam between hero and map */
   padding-top: var(--gap); /* extra cream space after the writing */
   background: var(--top);  /* keeps that space the same cream as the text section */

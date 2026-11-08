@@ -19,7 +19,7 @@ const props = defineProps({
   interval: { type: Number, default: 5000 },         // ms each slide stays on screen
 })
 
-// PLACEHOLDERS: replace images, stats, text and links with your real content.
+// PLACEHOLDERS: replace images, stats and text with your real content.
 // Use portrait photos (about 3:4).
 const SLIDES: Slide[] = [
   {
@@ -31,8 +31,8 @@ const SLIDES: Slide[] = [
       { label: 'Setting', value: 'Riverside' },
     ],
     text: 'Heritage-style cottages nestled in coconut groves along the waterfront, made for slow mornings and quiet evenings.',
-    cta: 'Explore Cottages',
-    to: '/cottages',
+    cta: 'Book a Stay',
+    to: '/book',
   },
   {
     id: 'events',
@@ -43,8 +43,8 @@ const SLIDES: Slide[] = [
       { label: 'Setting', value: 'Open-air' },
     ],
     text: 'Open-air pavilions for weddings, retreats and private gatherings, framed by the river and the greenery.',
-    cta: 'Explore Events',
-    to: '/events',
+    cta: 'Book a Stay',
+    to: '/book',
   },
   {
     id: 'garden',
@@ -55,8 +55,8 @@ const SLIDES: Slide[] = [
       { label: 'Setting', value: 'Lawns' },
     ],
     text: 'Open green lawns and landscaped gardens for walks, celebrations and long afternoons by the water.',
-    cta: 'Explore Gardens',
-    to: '/gardens',
+    cta: 'Book a Stay',
+    to: '/book',
   },
 ]
 
@@ -109,7 +109,7 @@ function stopAuto() {
 }
 
 // starts the countdown to the next slide. Called again after every move,
-// so a manual click restarts the 5 seconds instead of being skipped.
+// so a manual click restarts the countdown instead of being skipped.
 function startAuto() {
   stopAuto()
   if (busy || reduce()) return
@@ -332,7 +332,7 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
-          <!-- center: photo + overlapping title -->
+          <!-- center: photo, with the title sitting below it -->
           <div class="frame-wrap">
             <div class="frame">
               <div
@@ -346,7 +346,6 @@ onBeforeUnmount(() => {
               </div>
             </div>
 
-            <!-- titles live outside the frame so they can hang over its bottom edge -->
             <div class="titles" aria-hidden="true">
               <div
                 v-for="(s, i) in SLIDES"
@@ -406,9 +405,9 @@ onBeforeUnmount(() => {
   --bg: var(--color-cream, #f4efe6);
   --ink: var(--color-green, #24382c);
   --gold: var(--color-gold, #d4900f);
-  --title: var(--gold);                        /* big title colour: change to var(--ink) for dark green */
+  --title: var(--gold);                        /* title colour: change to var(--ink) for dark green */
   --line: color-mix(in srgb, var(--ink) 22%, transparent);
-  --tsize: clamp(2.2rem, 5vw, 5.5rem);         /* title size */
+  --tsize: clamp(2.2rem, 4.6vw, 4.8rem);       /* title size */
   --radius: clamp(32px, 4vw, 64px);            /* curve of the top corners */
   --space-below: clamp(140px, 24vh, 260px);    /* empty space between this section and Places */
 
@@ -494,16 +493,18 @@ onBeforeUnmount(() => {
 }
 .cta:hover { background: var(--gold); color: var(--bg); }
 
-/* ---------- photo frame ---------- */
+/* ---------- photo + title, stacked: the title sits under the photo ---------- */
 .frame-wrap {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: clamp(260px, 29vw, 440px);
-  aspect-ratio: 3 / 4;
 }
 
 .frame {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
   background: var(--ink);
 }
@@ -525,18 +526,16 @@ onBeforeUnmount(() => {
   will-change: transform;
 }
 
-/* ---------- overlapping title (hero heading font) ---------- */
+/* ---------- title (below the photo, in the hero heading font) ---------- */
 .titles {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -0.1em;
-  height: 0.95em;
-  z-index: 3;
+  position: relative;
+  width: 100%;
+  height: calc(var(--tsize) * 1.15);
+  margin-top: clamp(0.9rem, 2vw, 1.5rem);
   font-family: var(--font-heading, Georgia, serif);
   font-size: var(--tsize);
   font-weight: 500;
-  line-height: 0.9;
+  line-height: 1;
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--title);
@@ -544,10 +543,11 @@ onBeforeUnmount(() => {
 }
 .t {
   position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  top: 0;
   display: flex;
+  justify-content: center;
   white-space: nowrap;
 }
 .ch {
@@ -595,7 +595,7 @@ onBeforeUnmount(() => {
 @media (max-width: 900px) {
   .stay { --tsize: clamp(2.2rem, 10vw, 4.2rem); }
   .stage { grid-template-columns: 1fr; justify-items: center; gap: 2.2rem; }
-  .frame-wrap { width: min(78vw, 380px); margin-bottom: 1.2rem; }
+  .frame-wrap { width: min(78vw, 380px); }
   .left, .right { justify-self: center; text-align: center; padding-left: 0; max-width: 28rem; }
   .left .info { display: flex; justify-content: center; gap: 2.5rem; }
   .stat { align-items: center; margin-bottom: 0; }

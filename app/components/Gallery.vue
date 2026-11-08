@@ -10,10 +10,10 @@ const images = [
   { src: '/image4.webp', alt: 'Swimming pool 2' },
 ]
 
-const DUR = 1100   
-const DELAY = 5500   
-const STAGGER = 0 
-const END = DUR * 1.2 + STAGGER * 2 + 80  
+const DUR = 1100
+const DELAY = 5500
+const STAGGER = 0
+const END = DUR * 1.2 + STAGGER * 2 + 80
 
 const total = images.length
 const index = ref(0)
@@ -21,7 +21,6 @@ const galleryEl = ref(null)
 
 const wrap = (n) => (n + total) % total
 const targetFor = (name, i) => (name === 'left' ? wrap(i - 1) : name === 'right' ? wrap(i + 1) : i)
-
 
 let uid = 0
 const makeLayer = (i, open) => ({ id: ++uid, i, open })
@@ -60,14 +59,12 @@ async function go(step) {
   if (reduceMotion) {
     slots.forEach((s) => (s.layers = [makeLayer(targetFor(s.name, index.value), true)]))
     busy = false
-  return
+    return
   }
 
-  
   slots.forEach((s) => s.layers.push(makeLayer(targetFor(s.name, index.value), false)))
   await nextTick()
 
-  
   await Promise.all(slots.map((s) => ensureLoaded(images[s.layers[s.layers.length - 1].i].src)))
 
   if (galleryEl.value) void galleryEl.value.offsetWidth
@@ -147,10 +144,13 @@ onBeforeUnmount(stopAutoplay)
 </template>
 
 <style scoped>
+/* Top corners mirror the bottom corners of the activities section.
+   Same cream, same curve size, same negative overlap. */
 .showcase {
-background-color: #faf4ea;
   --ink: #0d0d0d;
   --pill: #efeeeb;
+
+  --curve: clamp(60px, 9vw, 130px);
 
   --cw: 47.6;
   --sw: 23.8;
@@ -162,9 +162,15 @@ background-color: #faf4ea;
 
   --dur: 1.1s;
   --ease: cubic-bezier(0.77, 0, 0.175, 1);
+
+  position: relative;
+  z-index: 2;
+  margin-top: calc(-1 * var(--curve));
+  border-radius: var(--curve) var(--curve) 0 0;
+
   padding: clamp(140px, 20vh, 240px) 0 clamp(200px, 20vh, 240px);
   overflow: hidden;
-  background: #FAF4EA;
+  background: var(--color-cream, #f3e9dc);
   color: var(--ink);
 }
 
@@ -189,7 +195,7 @@ background-color: #faf4ea;
   font-size: clamp(25px, 5vw, 50px);
   line-height: 1.15;
   letter-spacing: -0.01em;
-  color: #12382A;
+  color: #12382a;
 }
 
 .gallery {
@@ -226,7 +232,6 @@ background-color: #faf4ea;
 
 .slot.is-clickable { cursor: pointer; }
 
-
 .layer {
   position: absolute;
   inset: 0;
@@ -250,7 +255,9 @@ background-color: #faf4ea;
 }
 
 .layer.is-open img {
-  transform: scale(1);}
+  transform: scale(1);
+}
+
 .controls {
   display: flex;
   justify-content: center;
