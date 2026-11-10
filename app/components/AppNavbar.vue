@@ -142,9 +142,8 @@ watch(() => route.fullPath, closeMenu)
 }
 
 
-/* =========================
-   MENU
-========================= */
+
+
 
 .menu-wrapper {
   position: relative;
@@ -258,9 +257,6 @@ watch(() => route.fullPath, closeMenu)
 }
 
 
-/* =========================
-   CENTER LOGO
-========================= */
 
 .nav__logo {
   display: flex;
@@ -278,9 +274,7 @@ watch(() => route.fullPath, closeMenu)
 }
 
 
-/* =========================
-   RIGHT SIDE
-========================= */
+
 
 .nav__actions {
   justify-self: end;

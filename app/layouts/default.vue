@@ -36,6 +36,7 @@ if (typeof window !== 'undefined') {
 
 // Grab Nuxt context at setup time (calling useNuxtApp after an `await` can lose context)
 const { $lenis } = useNuxtApp()
+const route = useRoute()
 
 const footerWrapperRef = ref(null)
 const footerCompRef = ref(null)
@@ -72,6 +73,15 @@ function onResize() {
   resizeTimer = setTimeout(updateSizes, 150)
 }
 
+watch(
+  () => route.fullPath,
+  async () => {
+    await nextTick()
+    ScrollTrigger.refresh()
+    if ($lenis) $lenis.resize()
+  },
+)
+
 onMounted(async () => {
   await nextTick()
   if (typeof window === 'undefined') return
@@ -90,35 +100,39 @@ onMounted(async () => {
     // Review section (.gs) at the bottom of the page
     const reviewEl = main.querySelector('.gs')
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: main,
-        start: () => `bottom-=${transitionDistance.value} bottom`,
-        end: 'bottom bottom',
-        scrub: true,
-        onUpdate: (self) => {
-          const p = self.progress
+    let reviewTimeline = null
+    if (reviewEl) {
+      reviewTimeline = gsap.timeline({ paused: true })
+    }
 
-          // Smooth fade in BOTH directions (no on/off snap)
-          gsap.set(wrapper, {
-            opacity: Math.min(1, p / PANEL_FADE_RANGE),
-            visibility: p > 0 ? 'visible' : 'hidden',
-          })
+    ScrollTrigger.create({
+      trigger: main,
+      start: () => `bottom-=${transitionDistance.value} bottom`,
+      end: 'bottom bottom',
+      scrub: true,
+      onUpdate: (self) => {
+        const p = self.progress
 
-          footerActive.value = p > 0.35
-          footerCompRef.value?.setAnimationProgress?.(p)
-        },
-        onLeaveBack: () => {
-          gsap.set(wrapper, { opacity: 0, visibility: 'hidden' })
-          footerActive.value = false
-          footerCompRef.value?.setAnimationProgress?.(0)
-        },
+        gsap.set(wrapper, {
+          opacity: Math.min(1, p / PANEL_FADE_RANGE),
+          visibility: p > 0 ? 'visible' : 'hidden',
+        })
+
+        footerActive.value = p > 0.35
+        footerCompRef.value?.setAnimationProgress?.(p)
+        reviewTimeline?.progress(p)
+      },
+      onLeaveBack: () => {
+        gsap.set(wrapper, { opacity: 0, visibility: 'hidden' })
+        footerActive.value = false
+        footerCompRef.value?.setAnimationProgress?.(0)
+        reviewTimeline?.progress(0)
       },
     })
 
     // Clip ONLY the review section into a floating rounded card as it rises over the footer
     if (reviewEl) {
-      tl.fromTo(
+      reviewTimeline.fromTo(
         reviewEl,
         {
           clipPath: 'inset(0% 0% 0% 0% round 0 0 0 0)',

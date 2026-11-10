@@ -2,17 +2,14 @@
   <section ref="sectionRef" class="focus-section">
     <!-- Outer clipping wrapper -->
     <div ref="clipWrapperRef" class="focus-clip-wrapper">
-      <!-- Layer 0: Full Tropical Palms & Terrace Ground -->
+      <!-- Layer 0: Tropical palms background -->
       <div ref="bgRef" class="focus-layer focus-layer--bg">
-        <picture>
-          <source srcset="/focus-tropical-bg.webp" type="image/webp" />
-          <img
-            src="/focus-tropical-bg.jpg"
-            alt="Tropical palms background"
-            class="focus-img focus-img--bg"
-            draggable="false"
-          />
-        </picture>
+        <img
+          src="/focus-tropical-bg2.png"
+          alt="Tropical palms background"
+          class="focus-img focus-img--bg"
+          draggable="false"
+        />
       </div>
 
       <!-- Layer 1: Architectural Geometric Vector Arches -->
@@ -51,27 +48,23 @@
         </svg>
       </div>
 
-      <!-- Layer 2: Editorial Headline Typography (Sandwiched behind the girl) -->
+      <!-- Layer 2: Editorial Headline Typography (sandwiched behind the woman) -->
       <div ref="textRef" class="focus-layer focus-layer--text">
         <div class="focus-text-container">
-          
           <h2 class="focus-title">
             <span class="focus-title__lead">Discover a living<br />experience</span>
           </h2>
         </div>
       </div>
 
-      <!-- Layer 3: Foreground Woman Cutout (Occludes text, letting it rise from behind her) -->
+      <!-- Layer 3: Foreground woman cutout (occludes text, letting it rise from behind her) -->
       <div ref="womanRef" class="focus-layer focus-layer--woman" aria-hidden="true">
-        <picture>
-          <source srcset="/focus-tropical-cutout.webp" type="image/webp" />
-          <img
-            src="/focus-tropical-cutout.png"
-            alt="Woman practicing yoga pose cutout"
-            class="focus-img focus-img--woman"
-            draggable="false"
-          />
-        </picture>
+        <img
+          src="/focus-tropical-cutout2.png"
+          alt="Woman practicing yoga pose cutout"
+          class="focus-img focus-img--woman"
+          draggable="false"
+        />
       </div>
     </div>
   </section>
@@ -93,9 +86,27 @@ const linesRef = ref(null)
 
 let ctx = null
 
+/* ───────────── pop-up reveal data (measured from the recording) ─────────────
+   [panelTop / viewportHeight, content offset / viewportHeight] */
+const KEYS = [
+  [1.00, 0.209], [0.70, 0.207], [0.61, 0.198], [0.50, 0.185],
+  [0.44, 0.176], [0.38, 0.168], [0.34, 0.164], [0.30, 0.161],
+  [0.24, 0.152], [0.20, 0.146], [0.06, 0.087], [0.00, 0],
+]
+
+const sampleOffset = (t) => {
+  if (t >= KEYS[0][0]) return KEYS[0][1]
+  for (let i = 0; i < KEYS.length - 1; i++) {
+    const [t1, v1] = KEYS[i]
+    const [t2, v2] = KEYS[i + 1]
+    if (t <= t1 && t >= t2) return v2 + (v1 - v2) * ((t - t2) / (t1 - t2))
+  }
+  return 0
+}
+
 onMounted(() => {
   ctx = gsap.context(() => {
-    
+
     const landscapeTargets = [bgRef.value, womanRef.value]
 
     gsap.fromTo(
@@ -113,7 +124,7 @@ onMounted(() => {
       }
     )
 
-    
+
     gsap.fromTo(
       textRef.value,
       { yPercent: 24, opacity: 0.8 },
@@ -130,7 +141,7 @@ onMounted(() => {
       }
     )
 
-    
+
     gsap.fromTo(
       linesRef.value,
       { yPercent: -2, opacity: 0.3 },
@@ -146,6 +157,34 @@ onMounted(() => {
         },
       }
     )
+
+    /* ───────────── pop-up reveal (slides over the pinned section above) ───────────── */
+    const secEl = sectionRef.value
+    const wrapEl = clipWrapperRef.value
+
+    const applyPopup = () => {
+      const vh = window.innerHeight
+      const top = Math.max(secEl.getBoundingClientRect().top, 0)
+
+      // content lags below the panel edge, then settles to 0
+      gsap.set(wrapEl, { y: sampleOffset(top / vh) * vh })
+
+      // corner radius holds, then shrinks to 0 over the last ~9% of viewport travel
+      const maxR = window.innerWidth < 768 ? 28 : 45
+      const r = maxR * Math.min(top / (vh * 0.088), 1)
+      secEl.style.borderRadius = `${r}px ${r}px 0 0`
+    }
+
+    ScrollTrigger.create({
+      trigger: secEl,
+      start: 'top bottom',
+      end: 'top top',
+      onUpdate: applyPopup,
+      onRefresh: applyPopup,
+      onToggle: applyPopup,
+    })
+
+    applyPopup()
   }, sectionRef)
 })
 
@@ -157,23 +196,30 @@ onBeforeUnmount(() => {
 <style scoped>
 .focus-section {
   position: relative;
+  z-index: 1;                          /* sits above the pinned map behind it */
   width: 100%;
   aspect-ratio: 1672 / 941;
-  margin-top: clamp(80px, 12vh, 180px);
-  margin-bottom: clamp(80px, 12vh, 180px);
-  
+  margin-top: 0;
+  margin-bottom: 0;
+
   height: auto;
   min-height: 0;
   background-color: #FAF4EA;
+  border-radius: 45px 45px 0 0;        /* JS animates this down to 0 */
+  box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.18);
   overflow: hidden;
 }
 
+/* taller than the section by the max lag, so no cream band shows above the image */
 .focus-clip-wrapper {
-  position: relative;
+  position: absolute;
+  top: -21vh;
+  left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% + 21vh);
   min-height: 0;
   overflow: hidden;
+  will-change: transform;
 }
 
 .focus-layer {
@@ -184,19 +230,29 @@ onBeforeUnmount(() => {
   pointer-events: none;
 }
 
-.focus-img--bg,
+/* the two images have different aspect ratios, so each is sized on its own */
+.focus-img--bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
 .focus-img--woman {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;             
-  object-position: center top;
+  object-fit: cover;
+  object-position: center bottom;      /* keeps her feet and the floor at the bottom */
   display: block;
 }
 
 .focus-layer--text {
-  position: absolute;            
+  position: absolute;
   inset: 0;
   z-index: 2;
   display: flex;
@@ -212,7 +268,7 @@ onBeforeUnmount(() => {
 }
 
 .focus-eyebrow {
-  font-family: var(--font-body, 'Nunito Sans', sans-serif);
+  font-family: var(--font-body, 'Cormorant Garamond', serif);
   font-size: clamp(12px, 1.2vw, 15px);
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -224,7 +280,7 @@ onBeforeUnmount(() => {
 }
 
 .focus-title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-size: clamp(56px, 9.5vw, 150px);
   line-height: 1.15;
   letter-spacing: -0.01em;
@@ -236,13 +292,13 @@ onBeforeUnmount(() => {
 
 .focus-title__lead {
   display: block;
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   color: #f7ede2;
 }
 
 .focus-title__accent {
   display: block;
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-style: italic;
   color: #d6995c;
   font-weight: 400;
@@ -254,18 +310,6 @@ onBeforeUnmount(() => {
   z-index: 3;
   overflow: hidden;
   will-change: transform;
-}
-
-.focus-img--woman {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center bottom;
-  image-rendering: -webkit-optimize-contrast;
-  display: block;
 }
 
 @media (max-width: 768px) {

@@ -272,6 +272,28 @@
         </transition>
       </div>
 
+      <div id="booking-content" class="booking-type-actions">
+        <button
+          type="button"
+          class="booking-type-btn"
+          :class="{ active: bookingType === 'room' }"
+          :aria-pressed="bookingType === 'room'"
+          @click="bookingType = 'room'"
+        >
+          Book Room
+        </button>
+        <button
+          type="button"
+          class="booking-type-btn"
+          :class="{ active: bookingType === 'event' }"
+          :aria-pressed="bookingType === 'event'"
+          @click="bookingType = 'event'"
+        >
+          Book Event
+        </button>
+      </div>
+
+      <template v-if="bookingType === 'room'">
       <!-- View filter tabs -->
       <div class="view-filter-bar">
         <div class="filter-tabs">
@@ -337,10 +359,11 @@
           </div>
         </div>
       </section>
+      </template>
 
       <!-- Multi-room summary bar -->
       <transition name="bar-slide">
-        <div v-if="selectedRoomIds.length > 0" class="floating-booking-summary-bar">
+        <div v-if="bookingType === 'room' && selectedRoomIds.length > 0" class="floating-booking-summary-bar">
           <div class="floating-bar-inner">
             <div class="floating-left">
               <span class="floating-room-count">
@@ -537,7 +560,7 @@
                     placeholder="Dietary needs, room preferences or a special occasion"
                   ></textarea>
                 </div>
-              </div>
+              </div>9
 
               <!-- Price summary -->
               <div class="checkout-right-summary">
@@ -676,6 +699,9 @@ definePageMeta({
 })
 
 useHead({
+
+
+  
   title: 'Book Your Stay | Aambal Resort, Kerala',
   meta: [
     { name: 'description', content: 'Book twin rooms with lake or garden views at Aambal Resort, Kerala.' }
@@ -928,6 +954,8 @@ const allRooms = [
 ]
 
 const selectedRoomIds = ref([])
+const route = useRoute()
+const bookingType = ref(route.query.type === 'event' ? 'event' : 'room')
 const viewFilter = ref('all')
 
 const filteredRooms = computed(() => {
@@ -1076,7 +1104,15 @@ onMounted(() => {
   min-height: 100vh;
   background-color: #faf4ea;
   color: #24201c;
+  font-family: var(--font-body, 'Cormorant Garamond', Georgia, serif);
   padding: 40px 24px 120px;
+}
+
+.booking-page button,
+.booking-page input,
+.booking-page select,
+.booking-page textarea {
+  font-family: 'Cormorant Garamond', Georgia, serif;
 }
 
 .booking-container {
@@ -1656,6 +1692,35 @@ textarea:focus-visible {
 }
 
 /* ================= VIEW FILTER TABS ================= */
+.booking-type-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  scroll-margin-top: 150px;
+}
+
+.booking-type-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 20px;
+  border: 1px solid #e0d4c1;
+  border-radius: 9999px;
+  background: #f2e9dc;
+  color: #4b4136;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.booking-type-btn.active {
+  border-color: #183c28;
+  background: #183c28;
+  color: #ffffff;
+}
+
 .view-filter-bar {
   display: flex;
   align-items: center;
@@ -1729,7 +1794,7 @@ textarea:focus-visible {
 }
 
 .room-title {
-  font-family: var(--font-heading, 'Playfair Display', serif);
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
   font-size: 24px;
   font-weight: 600;
   color: #1c1713;
@@ -1764,7 +1829,7 @@ textarea:focus-visible {
 }
 
 .total-price-val {
-  font-family: var(--font-heading, 'Playfair Display', serif);
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
   font-size: 30px;
   font-weight: 700;
   color: #171412;
@@ -1885,7 +1950,7 @@ textarea:focus-visible {
 }
 
 .floating-total-amount {
-  font-family: var(--font-heading, 'Playfair Display', serif);
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
   font-size: 24px;
   font-weight: 700;
 }
@@ -1984,7 +2049,7 @@ textarea:focus-visible {
 }
 
 .modal-room-name {
-  font-family: var(--font-heading, 'Playfair Display', serif);
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
   font-size: 26px;
   margin: 4px 0 2px;
   color: #ffffff;
@@ -2136,7 +2201,7 @@ textarea:focus-visible {
 }
 
 .checkout-main-title {
-  font-family: var(--font-heading, 'Playfair Display', serif);
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
   font-size: 32px;
   font-weight: 600;
   color: #171412;
@@ -2377,7 +2442,7 @@ textarea:focus-visible {
 .gt-value {
   color: #183c28;
   font-size: 20px;
-  font-family: var(--font-heading, 'Playfair Display', serif);
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
 }
 
 .payment-method-options {
@@ -2455,7 +2520,7 @@ textarea:focus-visible {
 }
 
 .conf-title {
-  font-family: var(--font-heading, 'Playfair Display', serif);
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
   font-size: 34px;
   font-weight: 600;
   color: #171412;
@@ -2506,7 +2571,7 @@ textarea:focus-visible {
 .conf-price {
   font-size: 18px;
   color: #183c28;
-  font-family: var(--font-heading, 'Playfair Display', serif);
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
 }
 
 .conf-room-pill {

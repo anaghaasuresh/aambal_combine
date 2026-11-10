@@ -10,8 +10,8 @@ const images = [
   { src: '/image4.webp', alt: 'Swimming pool 2' },
 ]
 
-const DUR = 1100
-const DELAY = 5500
+const DUR = 600
+const DELAY = 3000
 const STAGGER = 0
 const END = DUR * 1.2 + STAGGER * 2 + 80
 
@@ -101,7 +101,7 @@ onBeforeUnmount(stopAutoplay)
 </script>
 
 <template>
-  <section class="showcase" @mouseenter="stopAutoplay" @mouseleave="restartAutoplay">
+  <section class="showcase">
     <h2 class="showcase__title">{{ title }}</h2>
 
     <div ref="galleryEl" class="gallery" aria-roledescription="carousel" aria-label="Photo gallery">
@@ -144,9 +144,13 @@ onBeforeUnmount(stopAutoplay)
 </template>
 
 <style scoped>
+/* Top corners mirror the bottom corners of the activities section.
+   Same cream, same curve size, same negative overlap. */
 .showcase {
   --ink: #0d0d0d;
   --pill: #efeeeb;
+
+  --curve: clamp(60px, 9vw, 130px);
 
   --cw: 47.6;
   --sw: 23.8;
@@ -159,11 +163,17 @@ onBeforeUnmount(stopAutoplay)
   /* Corner radius of the photos, in % of the gallery width (cqw) */
   --r: 2;
 
-  --dur: 1.1s;
+  --dur: 0.6s;
   --ease: cubic-bezier(0.77, 0, 0.175, 1);
+
+  position: relative;
+  z-index: 2;
+  margin-top: calc(-1 * var(--curve));
+  border-radius: var(--curve) var(--curve) 0 0;
+
   padding: clamp(140px, 20vh, 240px) 0 clamp(200px, 20vh, 240px);
   overflow: hidden;
-  background: #FAF4EA;
+  background: var(--color-cream, #f3e9dc);
   color: var(--ink);
 }
 
@@ -184,12 +194,12 @@ onBeforeUnmount(stopAutoplay)
   margin: 0 auto clamp(48px, 7vw, 96px);
   padding: 0 20px;
   text-align: center;
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-weight: 400;
   font-size: clamp(25px, 5vw, 50px);
   line-height: 1.15;
   letter-spacing: -0.01em;
-  color: #12382A;
+  color: #12382a;
 }
 
 .gallery {

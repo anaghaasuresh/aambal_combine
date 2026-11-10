@@ -219,7 +219,7 @@ function go(step) {
 
   position: relative;
   padding: 64px 24px 80px;
-  background-color: #FAF4EA;
+  background-color: var(--color-cream, #f4efe6);
   color: var(--ink);
   text-align: center;
   overflow: hidden;
@@ -235,7 +235,7 @@ function go(step) {
 }
 .gs-title {
   margin: 0;
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-weight: 400;
   font-size: clamp(36px, 5vw, 56px);
   line-height: 1.1;
@@ -246,7 +246,7 @@ function go(step) {
 .gs-sub {
   margin: 0 auto;
   max-width: 440px;
-  font-family: var(--font-body, 'Nunito Sans', sans-serif);
+  font-family: var(--font-body, 'Cormorant Garamond', serif);
   font-size: 15px;
   line-height: 1.6;
   color: #687367;
@@ -298,7 +298,7 @@ function go(step) {
 .gs-quote {
   margin: 0 0 22px;
   min-height: 72px;
-  font-family: var(--font-body, 'Nunito Sans', sans-serif);
+  font-family: var(--font-body, 'Cormorant Garamond', serif);
   font-style: italic;
   font-size: 15px;
   line-height: 1.6;

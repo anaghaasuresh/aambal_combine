@@ -198,8 +198,8 @@ onBeforeUnmount(() => {
   --green-deep: #071a0f;
   --gold: #c9a45c;
   --cream: #efe6d2;
-  --heading: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
-  --sans: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --heading: 'Cormorant Garamond', Georgia, serif;
+  --sans: var(--font-body);
 
   position: relative;
   width: 100%;

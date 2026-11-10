@@ -1,9 +1,10 @@
 <template>
   <HeroArch />
   <ResortMap />
-  <StaySlider />
+  <focus/>
+  <ActivitiesSlider />
+  <WhyHere />
+  <Gallery />
   <placestovisit />
-   <Gallery/>
-   <focus/>
-   <review/>
+  <review />
 </template>
