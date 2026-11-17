@@ -154,7 +154,7 @@ function animate(from, to, dir) {
   })
 }
 
-/* ---------- LIFECYCLE ---------- */
+
 onMounted(() => {
   wraps.forEach((w, k) => gsap.set(w, { zIndex: k === 0 ? 2 : 0 }))
   gsap.fromTo(imgs[0], { scale: 1.15 }, { scale: 1, duration: 1.6, ease: 'power3.out' })
