@@ -97,14 +97,6 @@ onMounted(async () => {
     // Hidden at rest; fully controlled by scroll progress from here on
     gsap.set(wrapper, { opacity: 0, visibility: 'hidden' })
 
-    // Review section (.gs) at the bottom of the page
-    const reviewEl = main.querySelector('.gs')
-
-    let reviewTimeline = null
-    if (reviewEl) {
-      reviewTimeline = gsap.timeline({ paused: true })
-    }
-
     ScrollTrigger.create({
       trigger: main,
       start: () => `bottom-=${transitionDistance.value} bottom`,
@@ -120,35 +112,13 @@ onMounted(async () => {
 
         footerActive.value = p > 0.35
         footerCompRef.value?.setAnimationProgress?.(p)
-        reviewTimeline?.progress(p)
       },
       onLeaveBack: () => {
         gsap.set(wrapper, { opacity: 0, visibility: 'hidden' })
         footerActive.value = false
         footerCompRef.value?.setAnimationProgress?.(0)
-        reviewTimeline?.progress(0)
       },
     })
-
-    // Clip ONLY the review section into a floating rounded card as it rises over the footer
-    if (reviewEl) {
-      reviewTimeline.fromTo(
-        reviewEl,
-        {
-          clipPath: 'inset(0% 0% 0% 0% round 0 0 0 0)',
-          filter: 'drop-shadow(0 0px 0px rgba(0, 0, 0, 0))',
-        },
-        {
-          clipPath: () =>
-            window.innerWidth >= 992
-              ? 'inset(0% 21% 0% 21% round 0 0 24px 24px)'
-              : 'inset(0% 4% 0% 4% round 0 0 16px 16px)',
-          filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.45))',
-          ease: 'none',
-          duration: 1,
-        }
-      )
-    }
   })
 })
 
@@ -177,10 +147,6 @@ onUnmounted(() => {
 /* Re-enable pointer events on all child elements of main-content */
 .main-content :deep(*) {
   pointer-events: auto;
-}
-
-:deep(.gs) {
-  will-change: clip-path, filter;
 }
 
 .footer-wrapper {

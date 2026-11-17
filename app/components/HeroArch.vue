@@ -222,8 +222,8 @@ onBeforeUnmount(() => {
   margin: 0 auto;
 
   font-family: var(--font-heading);
-  font-size: clamp(3rem, 5vw, 5.3rem);
-  line-height: 1.37;
+  font-size: clamp(2.5rem, 4vw, 5.3rem);
+  line-height: 1.27;
   letter-spacing: -0.02em;
 
   color: var(--color-gold);

@@ -45,7 +45,7 @@
 
     <!-- RIGHT SIDE -->
     <div class="nav__actions">
-      <a href="#" class="nav__link">Contact</a>
+      <NuxtLink to="/contact" class="nav__link">Contact</NuxtLink>
       <NuxtLink to="/book" class="nav__cta">Book a stay</NuxtLink>
     </div>
 
@@ -101,7 +101,8 @@ watch(() => route.fullPath, closeMenu)
     transparent
   );
 
-  font-size: 0.85rem;
+  font-family: var(--font-body);   /* secondary: Proza Libre */
+  font-size: 0.9rem;               /* base nav size */
   letter-spacing: 0.18em;
   text-transform: uppercase;
 
@@ -142,16 +143,14 @@ watch(() => route.fullPath, closeMenu)
 }
 
 
-
-
-
 .menu-wrapper {
   position: relative;
   justify-self: start;
 }
 
 
-.nav__menu {
+/* PRIMARY font: Menu button */
+.nav .nav__menu {
   display: flex;
   align-items: center;
   gap: 0.9rem;
@@ -159,6 +158,10 @@ watch(() => route.fullPath, closeMenu)
   background: none;
   border: none;
   cursor: pointer;
+
+  font-family: var(--font-heading);   /* Cormorant Garamond */
+  font-size: 1.15rem;                 /* MENU BUTTON SIZE */
+  font-weight: 600;
 }
 
 
@@ -193,11 +196,11 @@ watch(() => route.fullPath, closeMenu)
   top: calc(100% + 1.2rem);
   left: 0;
 
-  width: 190px;
+  width: 210px;
 
   padding: 0.6rem 0;
 
-  background: rgba(46, 137, 183, 0.94);
+  background: rgba(15, 59, 45, 0.94);   /* --color-green; was blue */
 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -214,15 +217,18 @@ watch(() => route.fullPath, closeMenu)
 }
 
 
-.menu-dropdown a {
+/* PRIMARY font: dropdown links */
+.nav .menu-dropdown a {
   display: block;
 
   padding: 0.75rem 1.2rem;
 
   color: #fff;
 
-  font-size: 0.8rem;
-  letter-spacing: 0.15em;
+  font-family: var(--font-heading);   /* Cormorant Garamond */
+  font-size: 1.1rem;                  /* DROPDOWN LINK SIZE */
+  font-weight: 600;
+  letter-spacing: 0.12em;
 
   transition:
     background 0.25s ease,
@@ -231,7 +237,7 @@ watch(() => route.fullPath, closeMenu)
 }
 
 
-.menu-dropdown a:hover {
+.nav .menu-dropdown a:hover {
   background: rgba(255, 255, 255, 0.12);
 
   padding-left: 1.5rem;
@@ -257,7 +263,6 @@ watch(() => route.fullPath, closeMenu)
 }
 
 
-
 .nav__logo {
   display: flex;
   align-items: center;
@@ -274,8 +279,6 @@ watch(() => route.fullPath, closeMenu)
 }
 
 
-
-
 .nav__actions {
   justify-self: end;
 
@@ -286,8 +289,12 @@ watch(() => route.fullPath, closeMenu)
 }
 
 
-.nav__link {
+/* SECONDARY font: Contact + Book a stay */
+.nav .nav__link {
   position: relative;
+
+  font-family: var(--font-body);   /* Proza Libre */
+  font-size: 0.85rem;              /* CONTACT SIZE */
 }
 
 
@@ -316,13 +323,16 @@ watch(() => route.fullPath, closeMenu)
 }
 
 
-.nav__cta {
+.nav .nav__cta {
   padding: 0.75rem 1.5rem;
 
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 999px;
 
   white-space: nowrap;
+
+  font-family: var(--font-body);   /* Proza Libre */
+  font-size: 0.85rem;              /* BOOK A STAY SIZE */
 
   transition:
     background 0.3s ease,
@@ -374,8 +384,21 @@ watch(() => route.fullPath, closeMenu)
     width: 75px;
   }
 
+  .nav .nav__menu {
+    font-size: 1rem;
+  }
+
+  .nav .nav__cta {
+    font-size: 0.75rem;
+    padding: 0.6rem 1.1rem;
+  }
+
   .menu-dropdown {
-    width: 165px;
+    width: 185px;
+  }
+
+  .nav .menu-dropdown a {
+    font-size: 1rem;
   }
 
 }

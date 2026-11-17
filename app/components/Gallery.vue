@@ -189,15 +189,16 @@ onBeforeUnmount(stopAutoplay)
   }
 }
 
+/* PRIMARY: Cormorant Garamond */
 .showcase__title {
   max-width: 14em;
   margin: 0 auto clamp(48px, 7vw, 96px);
   padding: 0 20px;
   text-align: center;
-  font-family: var(--font-heading);
-  font-weight: 400;
-  font-size: clamp(25px, 5vw, 50px);
-  line-height: 1.15;
+  font-family: var(--font-heading, Georgia, serif);
+  font-weight: 600;                        /* BOLD (was 400) */
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 1.1;
   letter-spacing: -0.01em;
   color: #12382a;
 }
@@ -304,10 +305,13 @@ onBeforeUnmount(stopAutoplay)
 
 .controls__btn:focus-visible { outline: 3px solid #2a5bd7; outline-offset: 3px; }
 
+/* SECONDARY: Proza Libre */
 .controls__count {
   min-width: 108px;
   padding: 0 24px;
-  font-size: 20px;
+  font-family: var(--font-body);
+  font-weight: 600;                       
+  font-size: 18px;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
 }
@@ -316,7 +320,7 @@ onBeforeUnmount(stopAutoplay)
   .controls__btn,
   .controls__count { height: 48px; }
   .controls__btn { width: 48px; }
-  .controls__count { min-width: 88px; font-size: 16px; }
+  .controls__count { min-width: 88px; font-size: 15px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -324,3 +328,5 @@ onBeforeUnmount(stopAutoplay)
   .layer img { transition: none; }
 }
 </style>
+/* Top corners mirror the bottom corners of the activities section.
+   Same cream, same curve size, same negative overlap. */

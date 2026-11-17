@@ -172,8 +172,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* Section is the lighter cream. The card is a darker beige so it stands out.
-   The bottom corners curve down into the green "Why are you here?" section. */
 .activities {
   --card-bg: #ece4d4;
   --ink-dark: #12382a;
@@ -194,7 +192,6 @@ onBeforeUnmount(() => {
   justify-content: center;
 }
 
-/* The card: rounded rectangle, beige, soft border and shadow */
 .activities__card {
   position: relative;
   width: 100%;
@@ -233,11 +230,14 @@ onBeforeUnmount(() => {
 .activities__img.is-missing {
   display: none;
 }
+
+/* SECONDARY: caption */
 .activities__caption {
   position: absolute;
   left: 24px;
   bottom: 22px;
-  font-size: 0.68rem;
+  font-family: var(--font-body);        /* Proza Libre */
+  font-size: 0.72rem;                   /* CAPTION SIZE */
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #fff;
@@ -259,6 +259,8 @@ onBeforeUnmount(() => {
   justify-content: flex-end;
   gap: 0.5rem;
 }
+
+/* SECONDARY: arrow buttons */
 .activities__btn {
   width: 40px;
   height: 40px;
@@ -266,6 +268,7 @@ onBeforeUnmount(() => {
   border: 1px solid rgba(18, 56, 42, 0.25);
   background: transparent;
   color: var(--ink-dark);
+  font-family: var(--font-body);        /* Proza Libre */
   font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
@@ -280,36 +283,45 @@ onBeforeUnmount(() => {
   margin-top: auto;
   margin-bottom: auto;
 }
+
+/* SECONDARY: counter */
 .activities__count {
-  font-size: 0.7rem;
+  font-family: var(--font-body);        /* Proza Libre */
+  font-size: 0.75rem;                   /* COUNTER SIZE */
   letter-spacing: 0.25em;
   color: var(--ink-muted);
   margin-bottom: 1.5rem;
 }
+
 .activities__title {
   display: flex;
   flex-direction: column;
   line-height: 1;
   margin-bottom: 1.5rem;
 }
+
+/* PRIMARY: titles */
 .activities__italic {
-  font-family: var(--font-heading, 'Cormorant Garamond', serif);
+  font-family: var(--font-heading);     /* Cormorant Garamond */
   font-style: italic;
-  font-weight: 400;
-  font-size: clamp(2.6rem, 4.6vw, 4.2rem);
+  font-weight: 500;
+  font-size: clamp(3rem, 5.2vw, 4.8rem); /* TITLE SIZE */
   letter-spacing: -0.02em;
   color: var(--ink-dark);
 }
 .activities__bold {
-  font-family: var(--font-heading, 'Cormorant Garamond', serif);
-  font-weight: 500;
-  font-size: clamp(2.6rem, 4.6vw, 4.2rem);
+  font-family: var(--font-heading);     /* Cormorant Garamond */
+  font-weight: 600;
+  font-size: clamp(3rem, 5.2vw, 4.8rem); /* TITLE SIZE */
   letter-spacing: -0.02em;
   color: var(--ink-dark);
 }
+
+/* SECONDARY: description */
 .activities__desc {
   max-width: 380px;
-  font-size: 0.95rem;
+  font-family: var(--font-body);        /* Proza Libre */
+  font-size: 0.95rem;                   /* DESCRIPTION SIZE */
   line-height: 1.7;
   color: var(--ink-muted);
 }

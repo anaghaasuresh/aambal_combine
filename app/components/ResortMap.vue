@@ -95,7 +95,7 @@ onBeforeUnmount(() => {
 
 <template>
   <!-- CHANGED: added ref="rootEl" -->
-  <section ref="rootEl" class="reveal-map" :style="{ '--top': topColor, '--gap': gap }">
+  <section ref="rootEl" class="reveal-map" :style="{ '--top': topColor }">
     <div ref="stageEl" class="stage" @click="onStageClick">
       <!-- 1. full aerial photo, uncropped: the section height follows the image -->
       <img :src="aerialMap" alt="Resort aerial map" class="aerial" draggable="false" />

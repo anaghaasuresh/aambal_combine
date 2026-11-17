@@ -1,49 +1,72 @@
 <template>
   <footer ref="footerEl" class="footer">
-    <!-- Scaling Inner Wrapper (Synchronized Zoom Reveal) -->
     <div ref="footerInner" class="footer__inner">
-      <!-- Centre Content -->
+      <!-- Centre content -->
       <div class="footer__center">
-        <!-- Center Logo -->
-        <div data-anim="ctn" class="center-lotus-wrap">
-          <!-- SVG Fallback if logo.png is missing -->
-          <svg v-if="imgFailed" viewBox="0 0 100 60" fill="currentColor" class="center-lotus-svg">
-            <path d="M50 5 C55 22 75 25 88 45 C70 42 58 50 50 58 C42 50 30 42 12 45 C25 25 45 22 50 5 Z" />
-            <path d="M50 18 C58 30 68 35 74 48 C62 46 56 50 50 55 C44 50 38 46 26 48 C32 35 42 30 50 18 Z" opacity="0.6"/>
-          </svg>
-        </div>
-
-        <!-- Phone Number with 3D Character Flip (Editorial Italic Serif) -->
-        <div class="phone-wrap">
-          <a
-            ref="phoneEl"
-            class="phone"
-            :href="'tel:' + phoneRaw"
-            aria-label="Call Reservations"
-          >
-            <span
-              v-for="(char, i) in phoneChars"
-              :key="i"
-              class="split-char"
-              :class="{ 'space-char': char === ' ' }"
-            >{{ char === ' ' ? '\u00A0' : char }}</span>
-          </a>
-        </div>
-
-        <!-- Subtitle & Location -->
         <div class="address">
-          <p class="address-line" data-anim="line">AAMBAL RESORT &amp; EVENTS</p>
-          <p class="address-line" data-anim="line">KERALA, INDIA</p>
+          <h2 class="address-title" data-anim="line">AAMBAL RESORT &amp; EVENTS</h2>
+        </div>
+
+        <!-- Contact icons: each one is a real link -->
+        <nav class="contact-row" data-anim="ctn" aria-label="Contact Aambal Resort">
+          <template v-for="(item, i) in contacts" :key="item.key">
+            <span v-if="i > 0" class="contact-divider" aria-hidden="true"></span>
+
+            <a
+              class="contact-link"
+              :href="item.href"
+              :aria-label="item.label"
+              :title="item.label"
+              :target="item.external ? '_blank' : undefined"
+              :rel="item.external ? 'noopener noreferrer' : undefined"
+              @click="onLinkClick($event, item)"
+            >
+              <!-- Location -->
+              <svg v-if="item.key === 'location'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 21.5s-7-6.1-7-11.6a7 7 0 0 1 14 0c0 5.5-7 11.6-7 11.6z" />
+                <circle cx="12" cy="9.8" r="2.6" fill="currentColor" />
+              </svg>
+
+              <!-- Phone -->
+              <svg v-else-if="item.key === 'phone'" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M6.6 3h3l1.6 4.4-2.1 1.5a11.2 11.2 0 0 0 5 5l1.5-2.1L20 13.4v3.2a2.4 2.4 0 0 1-2.6 2.4C10 18.5 5.500 14 5 6.600A2.4 2.4 0 0 1 6.600 3z" />
+              </svg>
+
+              <!-- WhatsApp -->
+              <svg v-else-if="item.key === 'whatsapp'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3.200 20.800l1.500-4.900A8.600 8.600 0 1 1 8 19.300l-4.800 1.500z" />
+                <path d="M9.300 7.900c-.4.400-.7 1-.5 1.900.4 1.700 2.300 4 4.700 4.800.9.300 1.600 0 2-.5l.4-.8-2-1-.9.800a4.600 4.600 0 0 1-2.300-2.300l.8-.9-.9-2.100-1.300.1z" fill="currentColor" stroke="none" />
+              </svg>
+
+              <!-- Instagram -->
+              <svg v-else-if="item.key === 'instagram'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3.500" y="3.500" width="17" height="17" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.200" cy="6.800" r="1" fill="currentColor" stroke="none" />
+              </svg>
+
+              <!-- Email -->
+              <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="14" rx="1.500" />
+                <path d="M3.500 6.500l8.500 7 8.500-7" />
+              </svg>
+            </a>
+          </template>
+        </nav>
+
+        <!-- KERALA, INDIA flanked by lines -->
+        <div class="region" data-anim="ctn">
+          <span class="region-line" aria-hidden="true"></span>
+          <span class="region-text">KERALA, INDIA</span>
+          <span class="region-line" aria-hidden="true"></span>
         </div>
       </div>
 
-      <!-- Bottom Bar -->
+      <!-- Bottom bar -->
       <div class="footer__bottom">
-        <!-- Thin horizontal gold divider line -->
         <div data-anim="ctn" class="bottom-divider"></div>
 
         <div class="bottom-content">
-          <!-- Bottom Left: Copyright & Legal Links -->
           <div class="bottom-left" data-anim="line">
             <p class="legal-copy">&copy; 2026 AAMBAL RESORT</p>
             <div class="legal-links">
@@ -53,7 +76,6 @@
             </div>
           </div>
 
-          <!-- Bottom Right: Logo | KERALA, INDIA -->
           <div class="bottom-right" data-anim="line">
             <img src="/logo.png" alt="Aambal Resort" class="mini-lotus" @error="onImgError" />
             <span class="sep">|</span>
@@ -66,7 +88,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 
@@ -74,23 +96,66 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
 }
 
-const phoneFormatted = '+91 (484) 000-0000'
-const phoneRaw = '+914840000000'
-const phoneChars = computed(() => phoneFormatted.split(''))
+
+const PHONE = '919447036444'
+const WHATSAPP = '919447036444'
+const EMAIL = 'aambalresort@gmail.com'
+const INSTAGRAM = 'YOUR_HANDLE'
+
+const contacts = [
+  {
+    key: 'location',
+    label: 'Find Aambal Resort on Google Maps',
+    href: 'https://www.google.com/maps/search/?api=1&query=Aambal+Resort+and+Events+Chengamanad+Kerala',
+    external: true,
+  },
+  {
+    key: 'phone',
+    label: 'Call us',
+    href: `tel:+${PHONE}`,
+  },
+  {
+    key: 'whatsapp',
+    label: 'Chat with us on WhatsApp',
+    href: `https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hello Aambal Resort, I would like to enquire about a stay.')}`,
+    external: true,
+  },
+  {
+    key: 'instagram',
+    label: 'Follow us on Instagram',
+    href: `https://www.instagram.com/${INSTAGRAM}/`,
+    external: true,
+  },
+  {
+    key: 'email',
+    label: 'Email us',
+    href: `mailto:${EMAIL}`,
+  },
+]
 
 const footerEl = ref(null)
 const footerInner = ref(null)
-const phoneEl = ref(null)
-const imgFailed = ref(false)
+
+// mailto: does nothing on desktops with no mail app set up, so on desktop
+// the email icon opens Gmail's compose window instead. Phones keep mailto:.
+function onLinkClick(e, item) {
+  if (item.key !== 'email') return
+  if (window.matchMedia('(pointer: coarse)').matches) return
+  e.preventDefault()
+  window.open(
+    `https://mail.google.com/mail/?view=cm&fs=1&to=${EMAIL}`,
+    '_blank',
+    'noopener,noreferrer'
+  )
+}
 
 function onImgError(e) {
-  imgFailed.value = true
   e.target.style.display = 'none'
 }
 
 let ctx = null
 
-// 100% scroll-scrubbed animation - smoothly scrubs BOTH down AND up without time-based drops
+// 100% scroll-scrubbed animation, works both down and up
 function setAnimationProgress(p) {
   const root = footerEl.value
   const inner = footerInner.value
@@ -98,31 +163,15 @@ function setAnimationProgress(p) {
 
   const clampedP = Math.min(1, Math.max(0, p))
 
-  // 1. Zoom and opacity of the inner wrapper
-  const scaleVal = 0.8 + 0.2 * clampedP
+
+
   gsap.set(inner, {
-    scale: scaleVal,
+    scale: 0.8 + 0.2 * clampedP,
     opacity: Math.min(1, clampedP * 2),
     force3D: true,
   })
 
-  // 2. 3D Character Flip for Phone Number
-  const chars = root.querySelectorAll('.split-char')
-  if (chars.length) {
-    const charRange = Math.min(1, Math.max(0, (clampedP - 0.12) / 0.75))
-    chars.forEach((char, i) => {
-      const staggerStart = (i / chars.length) * 0.35
-      const indP = Math.min(1, Math.max(0, (charRange - staggerStart) / 0.65))
-      gsap.set(char, {
-        opacity: indP,
-        yPercent: 60 * (1 - indP),
-        rotateY: 90 * (1 - indP),
-        force3D: true,
-      })
-    })
-  }
-
-  // 3. Upward Line Reveals (Address, Legal, Location)
+  // 2. Upward line reveals (title, legal, location)
   const lines = root.querySelectorAll('[data-anim="line"]')
   if (lines.length) {
     const lineRange = Math.min(1, Math.max(0, (clampedP - 0.18) / 0.72))
@@ -137,7 +186,7 @@ function setAnimationProgress(p) {
     })
   }
 
-  // 4. Logo and divider container reveals
+ 
   const containers = root.querySelectorAll('[data-anim="ctn"]')
   if (containers.length) {
     const ctnP = Math.min(1, Math.max(0, (clampedP - 0.05) / 0.55))
@@ -151,7 +200,6 @@ function setAnimationProgress(p) {
   }
 }
 
-// Fallback no-ops so any external calls remain safe without running timers
 function revealText() {
   setAnimationProgress(1)
 }
@@ -182,7 +230,6 @@ onMounted(async () => {
       return
     }
 
-    // Set initial resting states for curtain reveal
     setAnimationProgress(0)
   }, footerEl.value)
 })
@@ -196,7 +243,7 @@ onBeforeUnmount(() => {
 .footer {
   --green: #0d2c19;
   --green-deep: #071a0f;
-  --gold: #c9a45c;
+  --gold: #e0bc78;
   --cream: #efe6d2;
   --heading: 'Cormorant Garamond', Georgia, serif;
   --sans: var(--font-body);
@@ -234,84 +281,100 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: clamp(130px, 22vh, 210px);
+  padding: clamp(150px, 30vh, 300px) 3vw 0;
   text-align: center;
 }
 
-.center-lotus-wrap {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 16px;
-  color: var(--gold);
-}
-
-.center-lotus {
-  height: 58px;
-  width: auto;
-  object-fit: contain;
-  display: block;
-}
-
-.center-lotus-svg {
-  height: 58px;
-  width: auto;
-  color: var(--gold);
-}
-
-.phone-wrap {
-  perspective: 1200px;
-}
-
-.phone {
-  display: inline-block;
-  margin-top: 10px;
-  font-family: var(--heading);
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(3.4rem, 7.8vw, 7.6rem);
-  line-height: 1.05;
-  letter-spacing: 0.02em;
-  color: var(--cream);
-  text-decoration: none;
-  white-space: nowrap;
-  text-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
-  transition: color 0.3s;
-  transform-style: preserve-3d;
-}
-
-.phone:hover {
-  color: #fff8e4;
-}
-
-.split-char {
-  display: inline-block;
-  will-change: transform, opacity;
-  transform-origin: center bottom;
-}
-
-.split-char.space-char {
-  width: 0.3em;
-}
 
 .address {
-  margin-top: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  width: 100%;
   overflow: hidden;
 }
 
-.address-line {
+.address-title {
   margin: 0;
-  font-size: clamp(0.64rem, 0.85vw, 0.78rem);
+  font-family: var(--heading);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 4.6vw, 5rem);
+  line-height: 1.2;
   letter-spacing: 0.34em;
+  padding-left: 0.34em; /* balances the trailing letter-spacing so the text is truly centred */
   color: var(--gold);
   will-change: transform, opacity;
 }
 
+
+.contact-row {
+  margin-top: clamp(2.5rem, 6vh, 4.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem clamp(0.8rem, 3vw, 3.2rem);
+  color: var(--gold);
+  text-decoration: none;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.contact-link svg {
+  width: clamp(20px, 1.9vw, 32px);
+  height: clamp(20px, 1.9vw, 32px);
+  display: block;
+}
+
+.contact-link:hover {
+  color: #fff3d4;
+  transform: translateY(-3px);
+}
+
+.contact-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.contact-divider {
+  width: 1px;
+  height: clamp(20px, 1.9vw, 30px);
+  background: var(--gold);
+  opacity: 0.9;
+}
+
+/* ---------- Region row ---------- */
+.region {
+  margin-top: clamp(1.2rem, 3vh, 2rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 2.2vw, 2.2rem);
+  color: var(--gold);
+}
+
+.region-line {
+  display: block;
+  width: clamp(40px, 14.5vw, 250px);
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.85;
+}
+
+.region-text {
+  font-family: var(--heading);
+  font-size: clamp(0.95rem, 1.5vw, 1.6rem);
+  letter-spacing: 0.34em;
+  padding-left: 0.34em;
+  white-space: nowrap;
+}
+
+/* ---------- Bottom bar ---------- */
 .footer__bottom {
   width: 100%;
-  padding: 0 4.5% 32px;
+  padding: 0 3% 32px;
   position: relative;
   z-index: 2;
   display: flex;
@@ -321,7 +384,7 @@ onBeforeUnmount(() => {
 .bottom-divider {
   width: 100%;
   height: 1px;
-  background: rgba(201, 164, 92, 0.35);
+  background: rgba(224, 188, 120, 0.35);
   margin-bottom: 22px;
 }
 
@@ -329,7 +392,7 @@ onBeforeUnmount(() => {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  font-size: clamp(0.6rem, 0.8vw, 0.7rem);
+  font-size: clamp(0.6rem, 0.8vw, 0.75rem);
   letter-spacing: 0.26em;
   color: var(--gold);
 }
@@ -387,13 +450,15 @@ onBeforeUnmount(() => {
   color: var(--gold);
 }
 
+/* ---------- Responsive ---------- */
 @media (max-width: 991px) {
   .footer__center {
     padding-top: 130px;
   }
-  .phone {
-    font-size: clamp(2.2rem, 8.5vw, 4.2rem);
-    letter-spacing: 0.01em;
+  .address-title {
+    letter-spacing: 0.2em;
+    padding-left: 0.2em;
+    font-size: clamp(1.4rem, 6vw, 3rem);
   }
   .bottom-content {
     flex-direction: column;
@@ -405,4 +470,26 @@ onBeforeUnmount(() => {
     justify-content: center;
   }
 }
+
+@media (max-width: 520px) {
+  .contact-link {
+    padding: 0.5rem 0.7rem;
+  }
+  .region-text {
+    letter-spacing: 0.2em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-link {
+    transition: none;
+  }
+  .contact-link:hover {
+    transform: none;
+  }
+}
 </style>
+
+
+
+
