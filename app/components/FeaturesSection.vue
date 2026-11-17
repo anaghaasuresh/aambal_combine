@@ -1,5 +1,5 @@
 <template>
-  <section class="features">
+  <section class="features" id="about">
     <div ref="trackEl" class="features__track">
       <div ref="row1" class="features__row">
         <div class="features__media features__media--left">
@@ -79,6 +79,7 @@ onBeforeUnmount(() => {
 .features {
   background: var(--color-cream);
   padding: 6rem clamp(1.5rem, 6vw, 6rem);
+  scroll-margin-top: 100px;
 }
 
 .features__row {
@@ -94,16 +95,20 @@ onBeforeUnmount(() => {
 .features__label--left  { order: 1; text-align: right; padding-right: 1rem; }
 .features__media--right { order: 2; }
 
+/* PRIMARY: Cormorant Garamond */
 .features__label {
-  font-family: var(--font-features);
-  font-size: clamp(2rem, 4.5vw, 3.5rem);
-  line-height: 1.2;
+  font-family: var(--font-heading);
+  font-weight: 500;                       /* Cormorant looks thin at 400 */
+  font-size: clamp(2.4rem, 5vw, 4rem);    /* LABEL SIZE (was 2rem-3.5rem) */
+  line-height: 1.15;
+  letter-spacing: -0.01em;
   color: var(--color-green);
 }
 
 .features__label em {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-heading);
   font-style: italic;
+  font-weight: 500;
 }
 
 .features__media {
@@ -127,6 +132,10 @@ onBeforeUnmount(() => {
 @media (max-width: 800px) {
   .features__row {
     grid-template-columns: 1fr;
+  }
+
+  .features__label {
+    font-size: clamp(2.2rem, 8vw, 3rem);
   }
 
   .features__media--left,

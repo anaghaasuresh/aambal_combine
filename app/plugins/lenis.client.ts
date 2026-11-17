@@ -3,6 +3,8 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 export default defineNuxtPlugin(() => {
+  if (typeof window === 'undefined') return
+
   gsap.registerPlugin(ScrollTrigger)
 
   const lenis = new Lenis({
@@ -12,6 +14,9 @@ export default defineNuxtPlugin(() => {
 
   // Let ScrollTrigger recalculate positions every time Lenis moves the page
   lenis.on('scroll', ScrollTrigger.update)
+
+  // Keep Lenis scroll limit in sync with GSAP pinned elements (HeroArch, StaySlider, etc.)
+  ScrollTrigger.addEventListener('refresh', () => lenis.resize())
 
   // Drive Lenis from GSAP's own frame loop instead of requestAnimationFrame directly,
   // so both stay in sync on the same clock
@@ -24,4 +29,3 @@ export default defineNuxtPlugin(() => {
     provide: { lenis },
   }
 })
-// lenis 
